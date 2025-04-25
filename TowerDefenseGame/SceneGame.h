@@ -3,6 +3,7 @@
 #include "Hud.h"
 #include "Inputs.h"
 #include "Waypoint.h"
+#include "KingTower.h"
 /*
 Metrics de sceneGame OU du level 1 (à effacer à la fin)
 - Position de la tour du roi: 1138, 600
@@ -50,4 +51,5 @@ private:
 
 	std::vector<Waypoint*> waypoints;
 	bool showWaypoints = false;
+	KingTower kingTower;
 };

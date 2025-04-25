@@ -2,7 +2,7 @@
 
 static const int SCREEN_WIDTH = 1680;
 static const int SCREEN_HEIGHT = 1050;
-static const sf::Vector2f KING_POS = { 6969, 6969 };
+static const sf::Vector2f KING_POS = { 1138, 600 };
 
 enum TowerType {archer, mage, knight, king};
 enum ProjectileType { arrow, blast, fireball };

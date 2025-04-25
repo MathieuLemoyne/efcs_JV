@@ -1,6 +1,7 @@
 #include "SceneGame.h"
 #include "ContentPipeline.h"
 #include "Waypoint.h"
+#include "KingTower.h"	
 #include <iostream> 
 
 SceneGame::SceneGame(RenderWindow& renderWindow, Event& event) : Scene(renderWindow, event)
@@ -28,14 +29,17 @@ bool SceneGame::init()
 	map.setTexture(ContentPipeline::getInstance().getMapTexture(Maps::map1));
 
 	hud.hudInit(ContentPipeline::getInstance().getHudmaskTexture(), ContentPipeline::getInstance().getComiciFont());
-	Waypoint* previous = nullptr;
 
+
+	Waypoint* previous = nullptr;
 	for (const auto& pos : WAYPOINTS_MAP1) { 
 		Waypoint* wp = new Waypoint(pos);
 		if (previous) previous->setNext(wp);
 		previous = wp;
 		waypoints.push_back(wp);
 	}
+
+	kingTower.init();
 
 	return true;
 }
@@ -64,7 +68,7 @@ void SceneGame::draw()
 	//Toujours important d'effacer l'écran précédent
 	renderWindow.clear();
 	renderWindow.draw(map);
-
+	kingTower.draw(renderWindow);
 
 	if (showWaypoints) {
 		for (const auto& wp : waypoints) {

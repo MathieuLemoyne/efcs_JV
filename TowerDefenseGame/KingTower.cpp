@@ -9,6 +9,8 @@ bool KingTower::init()
 {
     setPosition(KING_POS); 
 
+    activate();
+
     setTexture(ContentPipeline::getInstance().getKingTowerTexture());
 
     // set le collision circle ou hitbox ou whatever
