@@ -1,0 +1,327 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Fichiers sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Fichiers de ressources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Scenes">
+      <UniqueIdentifier>{24f21058-86a4-47f9-821a-4f52e74ed3c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\GameObject">
+      <UniqueIdentifier>{27cd4b0f-10d1-4926-9dea-a0b5bc097a64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\GameObject">
+      <UniqueIdentifier>{4ffffe30-1485-4d2e-a8bc-a661d51e29cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers de ressources\Sprites">
+      <UniqueIdentifier>{566a9840-5761-4e60-8e2a-f814d6d038b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers de ressources\Fonts">
+      <UniqueIdentifier>{cc91662a-54f0-43da-b67d-da883cf70153}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Actors">
+      <UniqueIdentifier>{5029c642-95d0-418f-ab29-c1430315e715}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Actors">
+      <UniqueIdentifier>{4a7e968b-3b9f-45a2-98de-bd89fbeefbc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers de ressources\Sprites\Characters">
+      <UniqueIdentifier>{2ce59408-1553-4165-94ad-504b0cbe6d98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers de ressources\Sprites\LifeBar">
+      <UniqueIdentifier>{4696c894-519d-45e1-b9b6-f0da2e363ccc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers de ressources\Sprites\Misc">
+      <UniqueIdentifier>{978776c3-fb60-4118-a26f-5402c3c36ecb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers de ressources\Sprites\Towers">
+      <UniqueIdentifier>{99846d02-5b6e-49f7-abed-6dd5e3797c24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers de ressources\Sprites\Maps">
+      <UniqueIdentifier>{edbd72c8-7f21-474e-88c0-aa4bd006840a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers de ressources\Sprites\Screens">
+      <UniqueIdentifier>{02c7be58-000c-4ed5-a6cf-b905ec629dab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers de ressources\Sprites\Projectiles">
+      <UniqueIdentifier>{8d790299-251c-4abf-a63c-c12cebccead4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers de ressources\Sounds">
+      <UniqueIdentifier>{f9b8f1c2-8244-4311-adad-190dd4488e58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers de ressources\Sounds\Music">
+      <UniqueIdentifier>{6d042a20-df8c-4598-a902-5567c552640b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers de ressources\Sounds\SFX">
+      <UniqueIdentifier>{a96a1ede-49ce-469a-8f8d-c1b39fe1ddb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Utils">
+      <UniqueIdentifier>{12270e86-13f8-4d1d-be30-eec299eee4ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\PublishSubscribe">
+      <UniqueIdentifier>{67467181-438d-4bb9-83e5-9b6606309b7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\PublishSubscribe">
+      <UniqueIdentifier>{3637bcd3-58ba-4937-9ef2-b557c1e15016}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers de ressources\Sprites\Spells">
+      <UniqueIdentifier>{e5ec62ef-f669-48ba-a386-31da908e484b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Utils">
+      <UniqueIdentifier>{6f4cbeaf-b34b-478e-817f-ece4caad9c85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\ContentPipeline">
+      <UniqueIdentifier>{0b6e96fb-3e88-480f-b2d8-bf370e374272}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\ContentPipeline">
+      <UniqueIdentifier>{da40bf4f-f6d1-44a9-9b2f-1972b3593dab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Scenes">
+      <UniqueIdentifier>{471ed740-bfb0-4ff6-94fc-a831105d17a5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Fichiers sources\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionCircle.cpp">
+      <Filter>Fichiers sources\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="ContentPipeline.cpp">
+      <Filter>Fichiers sources\ContentPipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Tower.cpp">
+      <Filter>Fichiers sources\Actors</Filter>
+    </ClCompile>
+    <ClCompile Include="Demon.cpp">
+      <Filter>Fichiers sources\Actors</Filter>
+    </ClCompile>
+    <ClCompile Include="TowerEmplacement.cpp">
+      <Filter>Fichiers sources\Actors</Filter>
+    </ClCompile>
+    <ClCompile Include="Projectile.cpp">
+      <Filter>Fichiers sources\Actors</Filter>
+    </ClCompile>
+    <ClCompile Include="Subject.cpp">
+      <Filter>Fichiers sources\PublishSubscribe</Filter>
+    </ClCompile>
+    <ClCompile Include="Hud.cpp">
+      <Filter>Fichiers sources\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneEnd.cpp">
+      <Filter>Fichiers sources\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneTitle.cpp">
+      <Filter>Fichiers sources\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneTransition.cpp">
+      <Filter>Fichiers sources\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Spell.cpp">
+      <Filter>Fichiers sources\Actors</Filter>
+    </ClCompile>
+    <ClCompile Include="Waypoint.cpp">
+      <Filter>Fichiers sources\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneGame.cpp">
+      <Filter>Fichiers sources\Scenes</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Game.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Fichiers d%27en-tête\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionCircle.h">
+      <Filter>Fichiers d%27en-tête\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Fichiers d%27en-tête\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="ContentPipeline.h">
+      <Filter>Fichiers d%27en-tête\ContentPipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Tower.h">
+      <Filter>Fichiers d%27en-tête\Actors</Filter>
+    </ClInclude>
+    <ClInclude Include="Demon.h">
+      <Filter>Fichiers d%27en-tête\Actors</Filter>
+    </ClInclude>
+    <ClInclude Include="TowerEmplacement.h">
+      <Filter>Fichiers d%27en-tête\Actors</Filter>
+    </ClInclude>
+    <ClInclude Include="Projectile.h">
+      <Filter>Fichiers d%27en-tête\Actors</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants.h">
+      <Filter>Fichiers d%27en-tête\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Inputs.h">
+      <Filter>Fichiers d%27en-tête\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="IObserver.h">
+      <Filter>Fichiers d%27en-tête\PublishSubscribe</Filter>
+    </ClInclude>
+    <ClInclude Include="Subject.h">
+      <Filter>Fichiers d%27en-tête\PublishSubscribe</Filter>
+    </ClInclude>
+    <ClInclude Include="Hud.h">
+      <Filter>Fichiers d%27en-tête\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneEnd.h">
+      <Filter>Fichiers d%27en-tête\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneTitle.h">
+      <Filter>Fichiers d%27en-tête\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneTransition.h">
+      <Filter>Fichiers d%27en-tête\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Spell.h">
+      <Filter>Fichiers d%27en-tête\Actors</Filter>
+    </ClInclude>
+    <ClInclude Include="Waypoint.h">
+      <Filter>Fichiers d%27en-tête\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneGame.h">
+      <Filter>Fichiers d%27en-tête\Scenes</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Ressources\Sprites\Maps\Map1.png">
+      <Filter>Fichiers de ressources\Sprites\Maps</Filter>
+    </Image>
+    <Image Include="Ressources\Sprites\Maps\Map2.png">
+      <Filter>Fichiers de ressources\Sprites\Maps</Filter>
+    </Image>
+    <Image Include="Ressources\Sprites\Maps\Map3.png">
+      <Filter>Fichiers de ressources\Sprites\Maps</Filter>
+    </Image>
+    <Image Include="Ressources\Sprites\Towers\ArcherTower.png">
+      <Filter>Fichiers de ressources\Sprites\Towers</Filter>
+    </Image>
+    <Image Include="Ressources\Sprites\Towers\KingTower.png">
+      <Filter>Fichiers de ressources\Sprites\Towers</Filter>
+    </Image>
+    <Image Include="Ressources\Sprites\Towers\KnightTower.png">
+      <Filter>Fichiers de ressources\Sprites\Towers</Filter>
+    </Image>
+    <Image Include="Ressources\Sprites\Towers\MageTower.png">
+      <Filter>Fichiers de ressources\Sprites\Towers</Filter>
+    </Image>
+    <Image Include="Ressources\Sprites\Characters\DarkKnight.png">
+      <Filter>Fichiers de ressources\Sprites\Characters</Filter>
+    </Image>
+    <Image Include="Ressources\Sprites\Characters\Demon.png">
+      <Filter>Fichiers de ressources\Sprites\Characters</Filter>
+    </Image>
+    <Image Include="Ressources\Sprites\Characters\Knight.png">
+      <Filter>Fichiers de ressources\Sprites\Characters</Filter>
+    </Image>
+    <Image Include="Ressources\Sprites\Screens\GameOver.png">
+      <Filter>Fichiers de ressources\Sprites\Screens</Filter>
+    </Image>
+    <Image Include="Ressources\Sprites\Screens\Title.jpg">
+      <Filter>Fichiers de ressources\Sprites\Screens</Filter>
+    </Image>
+    <Image Include="Ressources\Sprites\Projectiles\Arrow.png">
+      <Filter>Fichiers de ressources\Sprites\Projectiles</Filter>
+    </Image>
+    <Image Include="Ressources\Sprites\Projectiles\Blast.png">
+      <Filter>Fichiers de ressources\Sprites\Projectiles</Filter>
+    </Image>
+    <Image Include="Ressources\Sprites\Projectiles\Fireball.png">
+      <Filter>Fichiers de ressources\Sprites\Projectiles</Filter>
+    </Image>
+    <Image Include="Ressources\Sprites\Maps\HudMask.png">
+      <Filter>Fichiers de ressources\Sprites\Maps</Filter>
+    </Image>
+    <Image Include="Ressources\Sprites\Spells\Runes.png">
+      <Filter>Fichiers de ressources\Sprites\Spells</Filter>
+    </Image>
+    <Image Include="Ressources\Sprites\Spells\SacredLight.png">
+      <Filter>Fichiers de ressources\Sprites\Spells</Filter>
+    </Image>
+    <Image Include="Ressources\Sprites\Spells\Plague.png">
+      <Filter>Fichiers de ressources\Sprites\Spells</Filter>
+    </Image>
+    <Image Include="Ressources\Sprites\Misc\Icon.png">
+      <Filter>Fichiers de ressources\Sprites\Misc</Filter>
+    </Image>
+    <Image Include="Ressources\Sprites\Misc\TowerEmplacement.png">
+      <Filter>Fichiers de ressources\Sprites\Misc</Filter>
+    </Image>
+    <Image Include="Ressources\Sprites\Misc\Waypoint.png">
+      <Filter>Fichiers de ressources\Sprites\Misc</Filter>
+    </Image>
+    <Image Include="Ressources\Sprites\Misc\Flag.png">
+      <Filter>Fichiers de ressources\Sprites\Misc</Filter>
+    </Image>
+    <Image Include="Ressources\Sprites\LifeBar\GreenBar.png">
+      <Filter>Fichiers de ressources\Sprites\LifeBar</Filter>
+    </Image>
+    <Image Include="Ressources\Sprites\LifeBar\RedBar.png">
+      <Filter>Fichiers de ressources\Sprites\LifeBar</Filter>
+    </Image>
+    <Image Include="Ressources\Sprites\Screens\Victory.png">
+      <Filter>Fichiers de ressources\Sprites\Screens</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="Ressources\Font\comici.ttf">
+      <Filter>Fichiers de ressources\Fonts</Filter>
+    </Font>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Ressources\Sounds\Music\EndGameTheme.ogg">
+      <Filter>Fichiers de ressources\Sounds\Music</Filter>
+    </None>
+    <None Include="Ressources\Sounds\Music\Theme01.ogg">
+      <Filter>Fichiers de ressources\Sounds\Music</Filter>
+    </None>
+    <None Include="Ressources\Sounds\Music\Theme02.ogg">
+      <Filter>Fichiers de ressources\Sounds\Music</Filter>
+    </None>
+    <None Include="Ressources\Sounds\Music\Theme03.ogg">
+      <Filter>Fichiers de ressources\Sounds\Music</Filter>
+    </None>
+    <None Include="Ressources\Sounds\Music\TitleTheme.ogg">
+      <Filter>Fichiers de ressources\Sounds\Music</Filter>
+    </None>
+    <None Include="Ressources\Sounds\SFX\ArcherAttack.ogg">
+      <Filter>Fichiers de ressources\Sounds\SFX</Filter>
+    </None>
+    <None Include="Ressources\Sounds\SFX\DemonAttack.ogg">
+      <Filter>Fichiers de ressources\Sounds\SFX</Filter>
+    </None>
+    <None Include="Ressources\Sounds\SFX\Hit.ogg">
+      <Filter>Fichiers de ressources\Sounds\SFX</Filter>
+    </None>
+    <None Include="Ressources\Sounds\SFX\KnightAttack.ogg">
+      <Filter>Fichiers de ressources\Sounds\SFX</Filter>
+    </None>
+    <None Include="Ressources\Sounds\SFX\MageAttack.ogg">
+      <Filter>Fichiers de ressources\Sounds\SFX</Filter>
+    </None>
+    <None Include="Ressources\Sounds\Music\VictoryTheme.ogg">
+      <Filter>Fichiers de ressources\Sounds\Music</Filter>
+    </None>
+  </ItemGroup>
+</Project>
