@@ -1,5 +1,7 @@
 #include "SceneGame.h"
 #include "ContentPipeline.h"
+#include "Waypoint.h"
+#include <iostream> 
 
 SceneGame::SceneGame(RenderWindow& renderWindow, Event& event) : Scene(renderWindow, event)
 {
@@ -22,10 +24,18 @@ Scene::scenes SceneGame::run()
 }
 
 bool SceneGame::init()
-{	
+{
 	map.setTexture(ContentPipeline::getInstance().getMapTexture(Maps::map1));
 
 	hud.hudInit(ContentPipeline::getInstance().getHudmaskTexture(), ContentPipeline::getInstance().getComiciFont());
+	Waypoint* previous = nullptr;
+
+	for (const auto& pos : WAYPOINTS_MAP1) { 
+		Waypoint* wp = new Waypoint(pos);
+		if (previous) previous->setNext(wp);
+		previous = wp;
+		waypoints.push_back(wp);
+	}
 
 	return true;
 }
@@ -37,6 +47,10 @@ void SceneGame::getInputs()
 	{
 		//x sur la fenêtre
 		if (event.type == Event::Closed) exitGame();
+		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::W) {
+			std::cout << "[DEBUG] Touche W pressée " << std::endl;
+			showWaypoints = !showWaypoints;
+		}
 	}
 }
 
@@ -51,6 +65,13 @@ void SceneGame::draw()
 	renderWindow.clear();
 	renderWindow.draw(map);
 
+
+	if (showWaypoints) {
+		for (const auto& wp : waypoints) {
+			wp->draw(renderWindow);
+
+		}
+	}
 	hud.draw(renderWindow);
 	renderWindow.display();
 }

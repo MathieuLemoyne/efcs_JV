@@ -1,11 +1,8 @@
 #include "Waypoint.h"
-
+#include "ContentPipeline.h"
 //Waypoint::Waypoint()
 //{
 //}
-Waypoint::~Waypoint()
-{
-}
 void draw(RenderWindow& renderWindow) 
 {
 	// Quand W est appuyé, on appelle la fonction draw dans une loop foreach de waypoints
@@ -15,6 +12,8 @@ void draw(RenderWindow& renderWindow)
 Waypoint::Waypoint(const sf::Vector2f& position)
 {
 	setPosition(position);
+	activate();
+	init();
 }
 
 void Waypoint::setNext(Waypoint* next)
@@ -25,4 +24,11 @@ void Waypoint::setNext(Waypoint* next)
 Waypoint* Waypoint::getNext() const
 {
 	return next;
+}
+
+bool Waypoint::init()
+{
+	setTexture(ContentPipeline::getInstance().getWaypointTexture());
+
+	return true;
 }

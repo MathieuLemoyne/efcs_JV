@@ -28,6 +28,7 @@
     <ClInclude Include="Hud.h" />
     <ClInclude Include="Inputs.h" />
     <ClInclude Include="IObserver.h" />
+    <ClInclude Include="KingTower.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneEnd.h" />
@@ -47,6 +48,7 @@
     <ClCompile Include="ContentPipeline.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Hud.cpp" />
+    <ClCompile Include="KingTower.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="SceneEnd.cpp" />

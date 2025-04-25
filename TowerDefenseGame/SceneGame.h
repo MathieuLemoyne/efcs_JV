@@ -2,7 +2,7 @@
 #include "Scene.h"
 #include "Hud.h"
 #include "Inputs.h"
-
+#include "Waypoint.h"
 /*
 Metrics de sceneGame OU du level 1 (à effacer à la fin)
 - Position de la tour du roi: 1138, 600
@@ -47,4 +47,7 @@ private:
 	Inputs inputs;
 
 	Sprite map;
+
+	std::vector<Waypoint*> waypoints;
+	bool showWaypoints = false;
 };

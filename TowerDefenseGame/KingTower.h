@@ -1,10 +1,12 @@
 #pragma once
-#include "gameObject.h"
-class KingTower : public GameObject
+#include "Tower.h"
+class KingTower : public Tower
 {
 
-
-
-
+	public:
+	KingTower();
+	bool init();
 };
+
+
 

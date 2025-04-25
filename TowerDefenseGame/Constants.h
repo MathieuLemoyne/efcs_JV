@@ -8,21 +8,20 @@ enum TowerType {archer, mage, knight, king};
 enum ProjectileType { arrow, blast, fireball };
 enum SpellType { sacredLight, plague };
 enum Maps { map1, map2, map3 };
-static const std::vector<sf::Vector2f> WAYPOINTS_LEVEL_1 = {
-    {100, 200},
-    {250, 220},
-    {400, 300},
-    {600, 320},
-    {800, 400}
+static const std::vector<sf::Vector2f> WAYPOINTS_MAP1 = {
+    {610.f, 8.f},
+    {630.f, 222.f},
+    {595.f, 444.f},
+    {478.f, 514.f},
+    {320.f, 558.f},
+    {260.f, 620.f},
+    {280.f, 720.f},
+    {348.f, 812.f},
+    {720.f, 830.f},
+    {968.f, 850.f},
+    {1110.f, 682.f}
 };
-static const std::vector<sf::Vector2f> WAYPOINTS_LEVEL_2 = {
-    {80, 150},
-    {200, 200},
-    {350, 240},
-    {500, 270},
-    {700, 350},
-    {900, 420}
-};
+
 
 /* pour utiliser les waypoints dans le code
 std::vector<Waypoint*> waypoints;

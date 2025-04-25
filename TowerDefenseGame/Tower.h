@@ -1,5 +1,5 @@
 #pragma once
-
+#include "GameObject.h"
 /*
 Metrics des tours  (à effacer à la fin)
 
@@ -14,7 +14,7 @@ Metrics des tours  (à effacer à la fin)
 */
 
 
-class Tower
+class Tower : public GameObject
 {
 public:
 	Tower();
