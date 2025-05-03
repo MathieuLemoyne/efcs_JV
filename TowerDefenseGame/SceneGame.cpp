@@ -32,14 +32,26 @@ bool SceneGame::init()
 
 
 	Waypoint* previous = nullptr;
-	for (const auto& pos : WAYPOINTS_MAP1) { 
-		Waypoint* wp = new Waypoint(pos);
-		if (previous) previous->setNext(wp);
-		previous = wp;
-		waypoints.push_back(wp);
+	for (const auto& pos : WAYPOINTS_MAP1) {
+		waypoints[waypointCount].setPosition(pos);
+		waypoints[waypointCount].activate();
+		waypoints[waypointCount].init();
+
+		if (waypointCount > 0)
+			waypoints[waypointCount - 1].setNext(&waypoints[waypointCount]);
+
+		waypointCount++;
 	}
 
+
 	kingTower.init();
+
+	if (waypointCount > 0) {
+		demons[0] = Demon(1, Vector2f(610.f, -100.f));
+		demons[0].setFirstWaypoint(&waypoints[0]);
+		spawnedDemons = 1;
+	}
+
 
 	return true;
 }
@@ -60,7 +72,9 @@ void SceneGame::getInputs()
 
 void SceneGame::update()
 {
-
+	for (int i = 0; i < spawnedDemons; ++i) {
+		demons[i].update(deltaTime);
+	}
 }
 
 void SceneGame::draw()
@@ -71,11 +85,14 @@ void SceneGame::draw()
 	kingTower.draw(renderWindow);
 
 	if (showWaypoints) {
-		for (const auto& wp : waypoints) {
-			wp->draw(renderWindow);
-
-		}
+		for (int i = 0; i < waypointCount; ++i)
+			waypoints[i].draw(renderWindow);
 	}
+
+	for (int i = 0; i < spawnedDemons; ++i) {
+		demons[i].draw(renderWindow);
+	}
+
 	hud.draw(renderWindow);
 	renderWindow.display();
 }

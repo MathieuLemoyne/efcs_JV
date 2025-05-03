@@ -3,14 +3,14 @@
 class Waypoint : public GameObject
 {
 public:
-	//Waypoint();
-    Waypoint(const sf::Vector2f& position);
+	Waypoint();
 
     void setNext(Waypoint* next);
     Waypoint* getNext() const;
 
     bool init();
 
+    void draw(RenderWindow& renderWindow);
 private:
     Waypoint* next = nullptr;
 };

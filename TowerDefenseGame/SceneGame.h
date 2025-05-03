@@ -4,6 +4,7 @@
 #include "Inputs.h"
 #include "Waypoint.h"
 #include "KingTower.h"
+#include "Demon.h"
 /*
 Metrics de sceneGame OU du level 1 (à effacer à la fin)
 - Position de la tour du roi: 1138, 600
@@ -49,7 +50,14 @@ private:
 
 	Sprite map;
 
-	std::vector<Waypoint*> waypoints;
+	static constexpr int MAX_WAYPOINTS = 20;
+	Waypoint waypoints[MAX_WAYPOINTS];
+	int waypointCount = 0;
 	bool showWaypoints = false;
+
+	static constexpr int MAX_DEMONS = 20;
+	Demon demons[MAX_DEMONS];
+	int spawnedDemons = 0;
+
 	KingTower kingTower;
 };

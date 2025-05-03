@@ -1,4 +1,9 @@
 #pragma once
+#include "GameObject.h"
+#include "Waypoint.h"
+#include "ContentPipeline.h"
+
+//#include <SFML/Graphics.hpp>
 
 /*
 Metrics du Demon (à effacer à la fin)
@@ -13,11 +18,41 @@ Metrics du Demon (à effacer à la fin)
 - Position de départ des démons au niveau 2: -100, 410
 */
 
-class Demon
-{
-public:
-	Demon();
-
-private:
+enum class DemonState {
+    Moving,
+    AtEnd,
+    Dying
 };
 
+class Demon : public GameObject
+{
+public:
+    Demon();
+    Demon(int waveNumber, const Vector2f& spawnPosition);
+
+    void init();
+
+    void update(float deltaTime);
+    void draw(sf::RenderWindow& window);
+
+    void setFirstWaypoint(Waypoint* first);
+    bool isDemonAlive() const;
+
+    DemonState state = DemonState::Moving;
+
+private:
+	// Variables de la classe
+    float speed;
+    int waveNumber;
+    int health;
+
+	// Rectangle d'animation
+    IntRect animationRect;
+    float animationTime = 0.f;
+    float animationSpeed = 0.1f;
+    int currentFrame = 0;
+
+	// Cadence de tir
+
+    Waypoint* currentWaypoint;
+};
