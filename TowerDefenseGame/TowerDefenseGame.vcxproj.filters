@@ -144,6 +144,12 @@
     <ClCompile Include="KingTower.cpp">
       <Filter>Fichiers sources\Actors</Filter>
     </ClCompile>
+    <ClCompile Include="ArcherTower.cpp">
+      <Filter>Fichiers sources\Actors</Filter>
+    </ClCompile>
+    <ClCompile Include="MageTower.cpp">
+      <Filter>Fichiers sources\Actors</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -207,6 +213,12 @@
       <Filter>Fichiers d%27en-tête\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="KingTower.h">
+      <Filter>Fichiers d%27en-tête\Actors</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcherTower.h">
+      <Filter>Fichiers d%27en-tête\Actors</Filter>
+    </ClInclude>
+    <ClInclude Include="MageTower.h">
       <Filter>Fichiers d%27en-tête\Actors</Filter>
     </ClInclude>
   </ItemGroup>

@@ -17,8 +17,8 @@ Metrics des tours  (à effacer à la fin)
 class Tower : public GameObject
 {
 public:
+	virtual void draw(sf::RenderWindow& window) = 0;
+	virtual void update(float dt) {}
 	Tower();
-
 private:
 };
-
