@@ -1,16 +1,12 @@
 #pragma once
 #include "Tower.h"
-class KingTower : public Tower
+class ArcherTower : public Tower
 {
-
-	public:
-	KingTower();
+public:
 	bool init();
 	void draw(sf::RenderWindow& window) override;
 	void update(float dt) override;
 
 
 };
-
-
 

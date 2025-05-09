@@ -5,6 +5,7 @@
 #include "Waypoint.h"
 #include "KingTower.h"
 #include "Demon.h"
+#include "TowerEmplacement.h"
 /*
 Metrics de sceneGame OU du level 1 (à effacer à la fin)
 - Position de la tour du roi: 1138, 600
@@ -44,6 +45,8 @@ private:
 	void draw() override;
 	bool unload() override;
 
+	void createTower(sf::Vector2f position);
+
 	View view;
 	Hud hud;
 	Inputs inputs;
@@ -51,8 +54,14 @@ private:
 	Sprite map;
 
 	static constexpr int MAX_WAYPOINTS = 20;
+	static constexpr int MAX_EMPLACEMENTS = 8;
+
 	Waypoint waypoints[MAX_WAYPOINTS];
+	TowerEmplacement towerEmplacements[MAX_EMPLACEMENTS];
+
 	int waypointCount = 0;
+	int emplacementCount = 0;
+
 	bool showWaypoints = false;
 
 	static constexpr int MAX_DEMONS = 20;
@@ -60,4 +69,15 @@ private:
 	int spawnedDemons = 0;
 
 	KingTower kingTower;
+	enum class ActionMode {
+		None,
+		CreateArcherTower,
+		CreateMageTower,
+		PlagueSpell,
+		SacredLight,
+		Pause
+	};
+	ActionMode currentAction;
+	std::vector<Tower*> towers;
+	int towerCount = 0;
 };
