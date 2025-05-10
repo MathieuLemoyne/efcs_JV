@@ -13,7 +13,7 @@ Game::Game()
 
 	//Synchonisation coordonnée à l'écran!  Normalement 60 frames par secondes. À faire absolument
 	//renderWindow.setVerticalSyncEnabled(true);  //De plus en plus d'écrans sont rafraichis à plus de 60 frames par seconde, alors attention.
-	renderWindow.setFramerateLimit(60);  //Équivalent... normalement, mais pas toujours. À utiliser si la synchonisation de l'écran fonctionne mal.
+	//renderWindow.setFramerateLimit(60);  //Équivalent... normalement, mais pas toujours. À utiliser si la synchonisation de l'écran fonctionne mal.
 	//https://www.sfml-dev.org/tutorials/2.6/window-window.php
 
 	renderWindow.setKeyRepeatEnabled(false);

@@ -58,6 +58,8 @@ private:
 	static constexpr int MAX_DEMONS = 20;
 	Demon demons[MAX_DEMONS];
 	int spawnedDemons = 0;
+	float spawnTimer = 0.f;
+	float nextSpawnTime = 0.f;
 
 	KingTower kingTower;
 };

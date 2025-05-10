@@ -52,6 +52,8 @@ bool SceneGame::init()
 		spawnedDemons = 1;
 	}
 
+	nextSpawnTime = 1.f + static_cast<float>(rand()) / RAND_MAX * 2.f;
+	
 
 	return true;
 }
@@ -72,7 +74,20 @@ void SceneGame::getInputs()
 
 void SceneGame::update()
 {
-	for (int i = 0; i < spawnedDemons; ++i) {
+	spawnTimer += deltaTime;
+
+	if (spawnTimer >= nextSpawnTime && spawnedDemons < MAX_DEMONS)
+	{
+		spawnTimer = 0.f;
+		nextSpawnTime = 1.f + static_cast<float>(rand()) / RAND_MAX * 2.f;
+
+		demons[spawnedDemons] = Demon(1, Vector2f(610.f, -100.f));
+		demons[spawnedDemons].setFirstWaypoint(&waypoints[0]);
+		spawnedDemons++;
+	}
+
+	for (int i = 0; i < spawnedDemons; ++i)
+	{
 		demons[i].update(deltaTime);
 	}
 }
