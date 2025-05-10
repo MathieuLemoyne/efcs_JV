@@ -209,6 +209,9 @@
     <ClInclude Include="KingTower.h">
       <Filter>Fichiers d%27en-tête\Actors</Filter>
     </ClInclude>
+    <ClInclude Include="Shooter.h">
+      <Filter>Fichiers d%27en-tête\Actors</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Ressources\Sprites\Maps\Map1.png">

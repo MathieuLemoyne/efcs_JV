@@ -47,13 +47,18 @@ bool SceneGame::init()
 	kingTower.init();
 
 	if (waypointCount > 0) {
-		demons[0] = Demon(1, Vector2f(610.f, -100.f));
 		demons[0].setFirstWaypoint(&waypoints[0]);
 		spawnedDemons = 1;
 	}
 
+	for (int i = 0; i < MAX_DEMONS; ++i) {
+		demons[i].reset(1, Vector2f(610.f, -100.f));
+	}
+	spawnedDemons = 0;
+
+
 	nextSpawnTime = 1.f + static_cast<float>(rand()) / RAND_MAX * 2.f;
-	
+
 
 	return true;
 }
@@ -81,7 +86,6 @@ void SceneGame::update()
 		spawnTimer = 0.f;
 		nextSpawnTime = 1.f + static_cast<float>(rand()) / RAND_MAX * 2.f;
 
-		demons[spawnedDemons] = Demon(1, Vector2f(610.f, -100.f));
 		demons[spawnedDemons].setFirstWaypoint(&waypoints[0]);
 		spawnedDemons++;
 	}
