@@ -24,5 +24,7 @@ void KingTower::draw(RenderWindow& renderWindow)
 void KingTower::update(float dt)
 {
 }
-void shoot()
-{ // il ne peux pas shoot
+void KingTower::shoot()
+{
+}
+

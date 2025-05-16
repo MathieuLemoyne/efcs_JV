@@ -220,7 +220,7 @@
     </ClInclude>
     <ClInclude Include="MageTower.h">
       <Filter>Fichiers d%27en-tête\Actors</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="Shooter.h">
       <Filter>Fichiers d%27en-tête\Actors</Filter>
     </ClInclude>

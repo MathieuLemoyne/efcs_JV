@@ -17,3 +17,6 @@ void MageTower::update(float dt)
 {
 // mettre lanimation
 }
+void MageTower::shoot()
+{
+}
