@@ -2,6 +2,7 @@
 #include "Shooter.h"
 #include "Waypoint.h"
 #include "ContentPipeline.h"
+#include "Subject.h"
 
 //#include <SFML/Graphics.hpp>
 
@@ -24,7 +25,7 @@ enum class DemonState {
     Dying
 };
 
-class Demon : Shooter
+class Demon : Shooter, Subject
 {
 public:
     Demon();
@@ -45,6 +46,8 @@ public:
     void shoot() override;
     bool canAttack();
 
+    void startDyingAnimation();
+
 private:
 	// Variables de la classe
     float speed;
@@ -58,6 +61,10 @@ private:
     int currentFrame = 0;
 
 	// Cadence de tir
+    float attackCooldown;
+    float attackRange = 250.f;
+    float timeSinceLastAttack = 0.f;
+
 
     Waypoint* currentWaypoint;
 
