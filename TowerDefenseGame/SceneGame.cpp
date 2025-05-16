@@ -29,6 +29,7 @@ Scene::scenes SceneGame::run()
 
 bool SceneGame::init()
 {
+	Subject::addObserver(this);
 	currentAction = ActionMode::None;
 	map.setTexture(ContentPipeline::getInstance().getMapTexture(Maps::map1));
 
@@ -213,5 +214,10 @@ void SceneGame::createTower(sf::Vector2f position)
 	}
 	else {
 		std::cout << "[DEBUG] Invalid action mode for tower creation." << std::endl;
+	}
+}
+void SceneGame::notify(Subject* subject) {
+	if (Demon* demon = dynamic_cast<Demon*>(subject)) {
+		mana += manaPerKill;
 	}
 }

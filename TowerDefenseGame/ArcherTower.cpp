@@ -15,3 +15,7 @@ renderWindow.draw(*this);
 void ArcherTower::update(float dt)
 {
 }
+void ArcherTower::shoot()
+{
+
+}

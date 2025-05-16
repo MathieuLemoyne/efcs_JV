@@ -219,11 +219,7 @@
       <Filter>Fichiers d%27en-tête\Actors</Filter>
     </ClInclude>
     <ClInclude Include="MageTower.h">
-<<<<<<< HEAD
       <Filter>Fichiers d%27en-tête\Actors</Filter>
-=======
-	  <Filter>Fichiers d%27en-tête\Actors</Filter>
->>>>>>> 95e7ac659c26310d553141dfa65698bf72a96867
 	</ClInclude>
     <ClInclude Include="Shooter.h">
       <Filter>Fichiers d%27en-tête\Actors</Filter>

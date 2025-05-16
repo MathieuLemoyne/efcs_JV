@@ -6,6 +6,7 @@
 #include "KingTower.h"
 #include "Demon.h"
 #include "TowerEmplacement.h"
+#include "IObserver.h"
 /*
 Metrics de sceneGame OU du level 1 (à effacer à la fin)
 - Position de la tour du roi: 1138, 600
@@ -32,7 +33,7 @@ Metrics de du level 2 (à effacer à la fin)
 - Le reste est identique à la scène 1
 */
 
-class SceneGame : public Scene
+class SceneGame : public Scene, public IObserver
 {
 public:
 	SceneGame(RenderWindow& renderWindow, Event& event);
@@ -46,6 +47,7 @@ private:
 	bool unload() override;
 
 	void createTower(sf::Vector2f position);
+
 
 	View view;
 	Hud hud;
@@ -89,4 +91,7 @@ private:
 	float manaRegenRate = 1.f; // mana/sec
 	float manaRegenTimer = 0.f;
 	float manaPerKill = 5.f;
+
+	void notify(Subject* subject) override;
+
 };
