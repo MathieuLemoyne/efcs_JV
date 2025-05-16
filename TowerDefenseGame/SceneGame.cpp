@@ -54,10 +54,6 @@ bool SceneGame::init()
 		emplacementCount++;
 	}
 
-
-
-
-
 	kingTower.init();
 
 	if (waypointCount > 0) {
@@ -140,14 +136,61 @@ void SceneGame::update()
 		spawnedDemons++;
 	}
 
+	// Mise à jour des démons
 	for (int i = 0; i < spawnedDemons; ++i)
 	{
-		demons[i].update(deltaTime);
+		Demon& demon = demons[i];
+		demon.update(deltaTime);
+
+		if (!demon.canAttack()) continue;
+
+		Tower* closestTower = nullptr;
+		float closestDist = demon.getAttackRange();
+
+		for (Tower* tower : towers)
+		{
+			float dist = distance(demon, *tower);
+			if (dist <= demon.getAttackRange() && dist < closestDist)
+			{
+				closestDist = dist;
+				closestTower = tower;
+			}
+		}
+
+		if (closestTower)
+			demon.shoot(closestTower);
 	}
-	for (int i = towerCount; i < towers.size(); ++i) {
-		towers[i]->update(deltaTime);
+
+	// Mise à jour des tours
+	for (Tower* tower : towers)
+	{
+		tower->update(deltaTime);
+
+		if (!tower->canAttack()) continue;
+
+		Demon* closestDemon = nullptr;
+		float closestDist = tower->getAttackRange();
+
+		for (int i = 0; i < spawnedDemons; ++i)
+		{
+			Demon& demon = demons[i];
+			if (!demon.isDemonAlive()) continue;
+
+			float dist = distance(*tower, demon);
+			if (dist <= tower->getAttackRange() && dist < closestDist)
+			{
+				closestDist = dist;
+				closestDemon = &demon;
+			}
+		}
+
+		if (closestDemon)
+			std::cout << "[DEBUG] Tower is attacking a Demon!" << std::endl;
+
+			tower->shoot(closestDemon);
 	}
 }
+
 
 void SceneGame::draw()
 {
@@ -184,14 +227,14 @@ void SceneGame::createTower(sf::Vector2f position)
 {
 	if (currentAction == ActionMode::CreateArcherTower) {
 		ArcherTower* newTower = new ArcherTower();
-		newTower->setPosition(position);
+		newTower->GameObject::setPosition(position);
 		newTower->init();
 		towers.push_back(newTower); 
 		std::cout << "[DEBUG] Archer Tower created at: " << position.x << ", " << position.y << std::endl;
 	}
 	else if (currentAction == ActionMode::CreateMageTower) {
 		MageTower* newTower = new MageTower();
-		newTower->setPosition(position);
+		newTower->GameObject::setPosition(position);
 		newTower->init();
 		towers.push_back(newTower); 
 		std::cout << "[DEBUG] Mage Tower created at: " << position.x << ", " << position.y << std::endl;
@@ -199,4 +242,10 @@ void SceneGame::createTower(sf::Vector2f position)
 	else {
 		std::cout << "[DEBUG] Invalid action mode for tower creation." << std::endl;
 	}
+}
+
+float SceneGame::distance(const GameObject& a, const GameObject& b) const
+{
+	Vector2f delta = a.getPosition() - b.getPosition();
+	return std::sqrt(delta.x * delta.x + delta.y * delta.y);
 }

@@ -7,7 +7,7 @@ KingTower::KingTower()
 
 bool KingTower::init()
 {
-    setPosition(KING_POS); 
+    setPosition(KING_POS);
 
     activate();
 
@@ -17,10 +17,12 @@ bool KingTower::init()
 
     return true;
 }
+
 void KingTower::draw(RenderWindow& renderWindow)
 {
     renderWindow.draw(*this);
 }
+
 void KingTower::update(float dt)
 {
 }

@@ -219,9 +219,15 @@
       <Filter>Fichiers d%27en-tête\Actors</Filter>
     </ClInclude>
     <ClInclude Include="MageTower.h">
-	  <Filter>Fichiers d%27en-tête\Actors</Filter>
-	</ClInclude>
+      <Filter>Fichiers d%27en-tête\Actors</Filter>
+    </ClInclude>
     <ClInclude Include="Shooter.h">
+      <Filter>Fichiers d%27en-tête\Actors</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Damageable.h">
       <Filter>Fichiers d%27en-tête\Actors</Filter>
     </ClInclude>
   </ItemGroup>
@@ -344,5 +350,10 @@
     <None Include="Ressources\Sounds\Music\VictoryTheme.ogg">
       <Filter>Fichiers de ressources\Sounds\Music</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="TowerDefenseGame.rc">
+      <Filter>Fichiers de ressources</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

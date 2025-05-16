@@ -1,5 +1,7 @@
 #pragma once
 #include "GameObject.h"
+#include "Shooter.h"
+#include "Damageable.h"
 /*
 Metrics des tours  (à effacer à la fin)
 
@@ -14,11 +16,28 @@ Metrics des tours  (à effacer à la fin)
 */
 
 
-class Tower : public GameObject
+class Tower : public GameObject, public Shooter, public Damageable
 {
 public:
 	virtual void draw(sf::RenderWindow& window) = 0;
-	virtual void update(float dt) {}
+	virtual void update(float dt) = 0 {} 
+
 	Tower();
-private:
+
+	bool canAttack() const override;
+	void shoot(Damageable* target) override;
+	void takeDamage(int amount) override;
+
+	float getAttackRange() const;
+	int getDamage() const override;
+	float getAttackFrequency() const override;
+
+	bool isAlive() const;
+
+protected:
+	int health = 250;
+	int damage = 10;
+	float attackRange = 300.f;
+	float attackCooldown = 1.f;
+	float timeSinceLastAttack = 0.f;
 };

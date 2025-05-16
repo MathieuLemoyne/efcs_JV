@@ -47,6 +47,8 @@ private:
 
 	void createTower(sf::Vector2f position);
 
+	float distance(const GameObject& a, const GameObject& b) const;
+
 	View view;
 	Hud hud;
 	Inputs inputs;
