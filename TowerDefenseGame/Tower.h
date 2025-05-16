@@ -1,5 +1,5 @@
 #pragma once
-#include "GameObject.h"
+#include "Shooter.h"
 /*
 Metrics des tours  (à effacer à la fin)
 
@@ -14,7 +14,7 @@ Metrics des tours  (à effacer à la fin)
 */
 
 
-class Tower : public GameObject
+class Tower : public Shooter
 {
 public:
 	virtual void draw(sf::RenderWindow& window) = 0;

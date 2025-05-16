@@ -82,4 +82,11 @@ private:
 	ActionMode currentAction;
 	std::vector<Tower*> towers;
 	int towerCount = 0;
+
+
+	float mana = 0.f;
+	float maxMana = 100.f;
+	float manaRegenRate = 1.f; // mana/sec
+	float manaRegenTimer = 0.f;
+	float manaPerKill = 5.f;
 };

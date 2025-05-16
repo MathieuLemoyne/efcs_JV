@@ -6,7 +6,7 @@ public:
 	bool init();
 	void draw(sf::RenderWindow& window) override;
 	void update(float dt) override;
-
+	void shoot() override;
 
 };
 

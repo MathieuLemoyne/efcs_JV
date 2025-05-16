@@ -130,6 +130,7 @@ void SceneGame::getInputs()
 void SceneGame::update()
 {
 	spawnTimer += deltaTime;
+	manaRegenTimer += deltaTime;
 
 	if (spawnTimer >= nextSpawnTime && spawnedDemons < MAX_DEMONS)
 	{
@@ -139,6 +140,13 @@ void SceneGame::update()
 		demons[spawnedDemons].setFirstWaypoint(&waypoints[0]);
 		spawnedDemons++;
 	}
+	if (manaRegenTimer >= 1.f) {
+		mana += manaRegenRate * manaRegenTimer;
+		manaRegenTimer = 0.f;
+
+		if (mana > maxMana)
+			mana = maxMana;
+	}
 
 	for (int i = 0; i < spawnedDemons; ++i)
 	{
@@ -147,6 +155,13 @@ void SceneGame::update()
 	for (int i = towerCount; i < towers.size(); ++i) {
 		towers[i]->update(deltaTime);
 	}
+	if (manaRegenTimer >= 1.f) {
+    mana += manaRegenRate * manaRegenTimer;
+    manaRegenTimer = 0.f;
+
+    if (mana > maxMana)
+        mana = maxMana;
+}
 }
 
 void SceneGame::draw()
