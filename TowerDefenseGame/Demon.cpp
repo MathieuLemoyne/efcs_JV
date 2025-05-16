@@ -46,12 +46,20 @@ void Demon::init()
     sf::Vector2u fgSize = healthBar.getTexture()->getSize();
     healthBar.setOrigin(fgSize.x / 2.f, fgSize.y / 2.f);
 
+	// Configure la vitesse d'attaque
+    attackCooldown = 1.05f - 0.05f * waveNumber;
+    timeSinceLastAttack = 0.f;
+
+
     activate();
 }
 
 void Demon::update(float deltaTime)
 {
     if (!isDemonAlive()) return;
+
+	// Mettre à jour le cooldown d'attaque
+    timeSinceLastAttack += deltaTime;
 
     // Mettre à jour la barre de vie
     Vector2f spritePos = getPosition();
@@ -109,6 +117,35 @@ void Demon::update(float deltaTime)
             move(dir * speed * deltaTime);
         }
     }
+
+    if (state == DemonState::Dying)
+    {
+        animationTime += deltaTime;
+        if (animationTime >= animationSpeed)
+        {
+            animationTime = 0.f;
+            currentFrame++;
+
+            if (currentFrame < 4)
+            {
+                animationRect.left = currentFrame * 100;
+                animationRect.top = 50;
+                setTextureRect(animationRect);
+            }
+            else
+            {
+                deactivate();
+            }
+        }
+
+        return;
+    }
+
+    if (health <= 0 && isActive()) {
+        deactivate();
+        notifyAllObservers();
+    }
+
 }
 
 void Demon::setFirstWaypoint(Waypoint* first)
@@ -142,6 +179,15 @@ void Demon::shoot()
 bool Demon::canAttack()
 {
     return false;
+}
+
+void Demon::startDyingAnimation()
+{
+    state = DemonState::Dying;
+    currentFrame = 0;
+    animationTime = 0.f;
+    animationRect = IntRect(0, 50, 100, 50);
+    setTextureRect(animationRect);
 }
 
 
