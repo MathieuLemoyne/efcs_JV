@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ArcherTower.h" />
     <ClInclude Include="CollisionCircle.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Demon.h" />
@@ -29,6 +30,7 @@
     <ClInclude Include="Inputs.h" />
     <ClInclude Include="IObserver.h" />
     <ClInclude Include="KingTower.h" />
+    <ClInclude Include="MageTower.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneEnd.h" />
@@ -43,6 +45,7 @@
     <ClInclude Include="Waypoint.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ArcherTower.cpp" />
     <ClCompile Include="CollisionCircle.cpp" />
     <ClCompile Include="Demon.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -50,6 +53,7 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Hud.cpp" />
     <ClCompile Include="KingTower.cpp" />
+    <ClCompile Include="MageTower.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="SceneEnd.cpp" />

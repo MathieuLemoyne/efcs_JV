@@ -17,3 +17,10 @@ bool KingTower::init()
 
     return true;
 }
+void KingTower::draw(RenderWindow& renderWindow)
+{
+    renderWindow.draw(*this);
+}
+void KingTower::update(float dt)
+{
+}

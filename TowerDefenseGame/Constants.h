@@ -21,6 +21,16 @@ static const std::vector<sf::Vector2f> WAYPOINTS_MAP1 = {
     {968.f, 850.f},
     {1110.f, 682.f}
 };
+static const std::vector<sf::Vector2f> EMPLACEMENTS_MAP1 = {
+{470.f, 170.f},
+{770.f, 250.f},
+{440.f, 370.f},
+{650.f, 520.f},
+{120.f, 650.f},
+{470.f, 700.f},
+{850.f, 710.f},
+{660.f, 950.f}
+};
 
 
 /* pour utiliser les waypoints dans le code
