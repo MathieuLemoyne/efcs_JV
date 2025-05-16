@@ -157,8 +157,9 @@ void SceneGame::update()
 			}
 		}
 
-		if (closestTower)
-			demon.shoot(closestTower);
+		/*if (closestTower)
+			std::cout << "[DEBUG] Demon is attacking a tower!" << std::endl;
+			demon.shoot(closestTower);*/
 	}
 
 	// Mise à jour des tours
@@ -186,7 +187,6 @@ void SceneGame::update()
 
 		if (closestDemon)
 			std::cout << "[DEBUG] Tower is attacking a Demon!" << std::endl;
-
 			tower->shoot(closestDemon);
 	}
 }

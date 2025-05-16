@@ -6,6 +6,8 @@ public:
 	bool init();
 	void draw(sf::RenderWindow& window) override;
 
+	int getDamage() const;
+
 	void update(float dt) override;
 private:
 	int currentFrame = 0;

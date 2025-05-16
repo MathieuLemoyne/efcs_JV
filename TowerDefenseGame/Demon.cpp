@@ -61,13 +61,11 @@ void Demon::update(float deltaTime) {
     updateAnimation(deltaTime);
     updateMovement(deltaTime);
 
-    if (health <= 0 && isActive()) {
-        deactivate();
-        notifyAllObservers();
-    }
+
 }
 
 void Demon::draw(RenderWindow& window) {
+    if (!isDemonAlive()) return;
     window.draw(healthBarBackground);
     window.draw(healthBar);
     window.draw(*this);
@@ -98,8 +96,10 @@ float Demon::getAttackRange() const {
 
 void Demon::takeDamage(int amount) {
     health -= amount;
+    std::cout << "life left: " << health << std::endl;
     if (health <= 0 && state != DemonState::Dying) {
         health = 0;
+    
         startDyingAnimation();
     }
 }
@@ -118,7 +118,7 @@ void Demon::updateDyingAnimation(float deltaTime) {
         animationTime = 0.f;
         currentFrame++;
 
-        if (currentFrame < 4) {
+        if (currentFrame < 5) {
             animationRect.left = currentFrame * 100;
             setTextureRect(animationRect);
         }

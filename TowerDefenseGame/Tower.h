@@ -29,7 +29,7 @@ public:
 	void takeDamage(int amount) override;
 
 	float getAttackRange() const;
-	int getDamage() const override;
+	virtual int getDamage() const override;
 	float getAttackFrequency() const override;
 
 	bool isAlive() const;
