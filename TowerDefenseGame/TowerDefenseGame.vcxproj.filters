@@ -219,6 +219,7 @@
       <Filter>Fichiers d%27en-tête\Actors</Filter>
     </ClInclude>
     <ClInclude Include="MageTower.h">
+    <ClInclude Include="Shooter.h">
       <Filter>Fichiers d%27en-tête\Actors</Filter>
     </ClInclude>
   </ItemGroup>

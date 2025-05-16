@@ -37,6 +37,7 @@
     <ClInclude Include="SceneGame.h" />
     <ClInclude Include="SceneTitle.h" />
     <ClInclude Include="SceneTransition.h" />
+    <ClInclude Include="Shooter.h" />
     <ClInclude Include="Spell.h" />
     <ClInclude Include="Subject.h" />
     <ClInclude Include="Tower.h" />

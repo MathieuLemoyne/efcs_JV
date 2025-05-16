@@ -1,5 +1,5 @@
 #pragma once
-#include "GameObject.h"
+#include "Shooter.h"
 #include "Waypoint.h"
 #include "ContentPipeline.h"
 
@@ -24,7 +24,7 @@ enum class DemonState {
     Dying
 };
 
-class Demon : public GameObject
+class Demon : Shooter
 {
 public:
     Demon();
@@ -39,6 +39,11 @@ public:
     bool isDemonAlive() const;
 
     DemonState state = DemonState::Moving;
+
+    void reset(int waveNumber, const Vector2f& spawnPosition);
+
+    void shoot() override;
+    bool canAttack();
 
 private:
 	// Variables de la classe
@@ -55,4 +60,11 @@ private:
 	// Cadence de tir
 
     Waypoint* currentWaypoint;
+
+	// Health bar
+	Sprite healthBar;
+	Sprite healthBarBackground;
+
+    const int MAX_HEALTH = 60;
+    const float BAR_WIDTH = 60;
 };
