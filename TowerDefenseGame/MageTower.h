@@ -9,6 +9,7 @@ public:
 	int getDamage() const;
 
 	void update(float dt) override;
+	void shoot() override;
 private:
 	int currentFrame = 0;
 	float animationTimer = 0.f;

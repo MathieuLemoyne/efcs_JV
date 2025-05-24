@@ -29,6 +29,7 @@ Scene::scenes SceneGame::run()
 
 bool SceneGame::init()
 {
+	Subject::addObserver(this);
 	currentAction = ActionMode::None;
 	map.setTexture(ContentPipeline::getInstance().getMapTexture(Maps::map1));
 
@@ -80,13 +81,13 @@ bool SceneGame::init()
 
 void SceneGame::getInputs()
 {
-	//On passe l'événement en référence et celui-ci est chargé du dernier événement reçu!
+	//On passe l'Ã©vÃ©nement en rÃ©fÃ©rence et celui-ci est chargÃ© du dernier Ã©vÃ©nement reÃ§u!
 	while (renderWindow.pollEvent(event))
 	{
-		//x sur la fenêtre
+		//x sur la fenÃªtre
 		if (event.type == Event::Closed) exitGame();
 		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::W) {
-			std::cout << "[DEBUG] Touche W pressée " << std::endl;
+			std::cout << "[DEBUG] Touche W pressÃ©e " << std::endl;
 			showWaypoints = !showWaypoints;
 		}
 
@@ -135,6 +136,7 @@ void SceneGame::getInputs()
 void SceneGame::update()
 {
 	spawnTimer += deltaTime;
+	manaRegenTimer += deltaTime;
 
 	if (spawnTimer >= nextSpawnTime && spawnedDemons < MAX_DEMONS)
 	{
@@ -144,8 +146,15 @@ void SceneGame::update()
 		demons[spawnedDemons].setFirstWaypoint(&waypoints[0]);
 		spawnedDemons++;
 	}
+	if (manaRegenTimer >= 1.f) {
+		mana += manaRegenRate * manaRegenTimer;
+		manaRegenTimer = 0.f;
 
-	// Mise à jour des démons et attaque
+		if (mana > maxMana)
+			mana = maxMana;
+	}
+
+	// Mise Ã  jour des dÃ©mons et attaque
 	for (int i = 0; i < spawnedDemons; ++i)
 	{
 		Demon& demon = demons[i];
@@ -204,7 +213,7 @@ void SceneGame::update()
 
 	kingTower.update(deltaTime);
 
-	// Mise à jour des tours
+	// Mise Ã  jour des tours
 	for (Tower* tower : towers)
 	{
 		if (!tower->isAlive()) continue;
@@ -307,12 +316,19 @@ void SceneGame::update()
 			}
 		}
 	}
+	if (manaRegenTimer >= 1.f) {
+    mana += manaRegenRate * manaRegenTimer;
+    manaRegenTimer = 0.f;
+
+    if (mana > maxMana)
+        mana = maxMana;
+}
 }
 
 
 void SceneGame::draw()
 {
-	//Toujours important d'effacer l'écran précédent
+	//Toujours important d'effacer l'Ã©cran prÃ©cÃ©dent
 	renderWindow.clear();
 	renderWindow.draw(map);
 	kingTower.draw(renderWindow);
@@ -365,6 +381,11 @@ void SceneGame::createTower(sf::Vector2f position)
 	}
 	else {
 		std::cout << "[DEBUG] Invalid action mode for tower creation." << std::endl;
+	}
+}
+void SceneGame::notify(Subject* subject) {
+	if (Demon* demon = dynamic_cast<Demon*>(subject)) {
+		mana += manaPerKill;
 	}
 }
 

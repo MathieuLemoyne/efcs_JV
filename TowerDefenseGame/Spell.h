@@ -1,4 +1,7 @@
 #pragma once
+#include "GameObject.h"
+#include "Subject.h"
+#include "Constants.h"
 
 /*
 Metrics du Spell (à effacer à la fin)
@@ -16,11 +19,16 @@ va de 0 à 20, progressivement en avancant dans le temps
 
 */
 
-class Spell
+class Spell : public GameObject, public Subject
 {
 public:
-	Spell();
-
+    Spell();
+    bool init();
+    void activateSpell(const sf::Vector2f& position, SpellType type);
+    void update(float deltaTime);
 private:
+    float lifeTime;
+    float duration;
+    float rotationSpeed;
+	SpellType type;
 };
-
