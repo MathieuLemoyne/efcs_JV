@@ -3,24 +3,28 @@
 #include <cstdlib>
 #include <iostream>
 
-bool MageTower::init()
-{
-	std::cout << "MageTower::init()" << std::endl;
+bool MageTower::init() {
+    Tower::init(false);
     setTexture(ContentPipeline::getInstance().getMageTowerTexture());
     setTextureRect(sf::IntRect(0, 0, 150, 150));
-    setOrigin(75, 125);
+    setOrigin(75, 105);
+    setCollisionCircleRadius(getGlobalBounds().width / 4.f);
     attackCooldown = 1.5f;
+	barOffsetY = 95.f;
     return true;
 }
 
-void MageTower::draw(RenderWindow& renderWindow)
-{
-    renderWindow.draw(*this);
+void MageTower::draw(RenderWindow& window) {
+    if (!isAlive()) return;
+    window.draw(healthBarBackground);
+    window.draw(healthBar);
+    window.draw(*this);
 }
 
 void MageTower::update(float dt)
 {
     timeSinceLastAttack += dt;
+    Tower::update(dt);
     // mettre lanimation
 }
 

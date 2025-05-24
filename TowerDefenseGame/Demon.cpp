@@ -25,8 +25,8 @@ void Demon::init() {
     healthBarBackground.setTexture(ContentPipeline::getInstance().getRedBarTexture());
     healthBar.setTexture(ContentPipeline::getInstance().getGreenBarTexture());
 
-    sf::Vector2u bgSize = healthBarBackground.getTexture()->getSize();
-    sf::Vector2u fgSize = healthBar.getTexture()->getSize();
+    Vector2u bgSize = healthBarBackground.getTexture()->getSize();
+    Vector2u fgSize = healthBar.getTexture()->getSize();
     healthBarBackground.setOrigin(bgSize.x / 2.f, bgSize.y / 2.f);
     healthBar.setOrigin(fgSize.x / 2.f, fgSize.y / 2.f);
 
@@ -48,7 +48,7 @@ void Demon::reset(int waveNumber, const Vector2f& spawnPosition) {
 }
 
 void Demon::update(float deltaTime) {
-    if (!isDemonAlive()) return;
+    if (!isAlive()) return;
 
     timeSinceLastAttack += deltaTime;
 
@@ -65,7 +65,7 @@ void Demon::update(float deltaTime) {
 }
 
 void Demon::draw(RenderWindow& window) {
-    if (!isDemonAlive()) return;
+    if (!isAlive()) return;
     window.draw(healthBarBackground);
     window.draw(healthBar);
     window.draw(*this);
@@ -173,6 +173,6 @@ void Demon::setFirstWaypoint(Waypoint* first) {
     currentWaypoint = first;
 }
 
-bool Demon::isDemonAlive() const {
+bool Demon::isAlive() const {
     return isActive();
 }

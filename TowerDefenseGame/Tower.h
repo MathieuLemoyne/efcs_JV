@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Shooter.h"
 #include "Damageable.h"
+#include "ContentPipeline.h"
 /*
 Metrics des tours  (à effacer à la fin)
 
@@ -20,9 +21,12 @@ class Tower : public GameObject, public Shooter, public Damageable
 {
 public:
 	virtual void draw(sf::RenderWindow& window) = 0;
-	virtual void update(float dt) = 0 {} 
+	virtual void update(float deltaTime);
 
 	Tower();
+
+	void init(bool isKing = false);
+
 
 	bool canAttack() const override;
 	bool shoot() override;
@@ -32,12 +36,20 @@ public:
 	virtual int getDamage() const override;
 	float getAttackFrequency() const override;
 
-	bool isAlive() const;
+	bool isAlive() const override;
 
 protected:
+	int maxHealth = 0;
 	int health = 250;
 	int damage = 10;
 	float attackRange = 300.f;
 	float attackCooldown = 1.f;
 	float timeSinceLastAttack = 0.f;
+
+	Sprite healthBar;
+	Sprite healthBarBackground;
+
+	const int MAX_HEALTH = 250;
+	const float BAR_WIDTH = 60;
+	float barOffsetY = 70.f;
 };

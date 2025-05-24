@@ -30,7 +30,7 @@ public:
               const sf::Vector2f& target,
               int damage);
 
-    void setTarget(Demon* target);
+    void setTarget(Damageable* target);
 
     void update(float deltaTime);
     void applyDamage(Damageable* target);
@@ -39,7 +39,7 @@ public:
 
 private:
     ProjectileType type;
-    Demon* targetPtr = nullptr;
+    Damageable* targetPtr = nullptr;
     sf::Vector2f velocity;
     float speed;
     int damage;

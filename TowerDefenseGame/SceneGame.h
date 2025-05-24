@@ -89,7 +89,7 @@ private:
 	Projectile projectiles[3][MAX_PER_TYPE];
 	int nextProjectile[3] = { 0, 0, 0 };
 
-	void spawnProjectile(ProjectileType type, const Vector2f& start, const Vector2f& target, int damage, Demon* targetPtr);
+	void spawnProjectile(ProjectileType type, const Vector2f& start, const Vector2f& target, int damage, Damageable* targetPtr);
 
 	int towerCount = 0;
 };

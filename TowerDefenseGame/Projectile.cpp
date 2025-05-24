@@ -20,15 +20,15 @@ void Projectile::init(ProjectileType type,
 
     switch (type) {
     case ProjectileType::arrow:
-        setTexture(ContentPipeline::getInstance().getArrowTexture());
+        setTexture(ContentPipeline::getInstance().getArrowTexture(), true);
         speed = 15.f * 60.f;
         break;
     case ProjectileType::blast:
-        setTexture(ContentPipeline::getInstance().getBlastTexture());
+        setTexture(ContentPipeline::getInstance().getBlastTexture(), true);
         speed = 8.f * 60.f;
         break;
     case ProjectileType::fireball:
-        setTexture(ContentPipeline::getInstance().getFireballTexture());
+        setTexture(ContentPipeline::getInstance().getFireballTexture(), true);
         speed = 10.f * 60.f;
         break;
     }
@@ -53,7 +53,7 @@ void Projectile::init(ProjectileType type,
 }
 
 
-void Projectile::setTarget(Demon* target)
+void Projectile::setTarget(Damageable* target)
 {
     targetPtr = target;
 }
@@ -63,7 +63,7 @@ void Projectile::update(float deltaTime)
     if (!isActive())
         return;
 
-    if (targetPtr && !targetPtr->isActive()) {
+    if (targetPtr && !targetPtr->isAlive()) {
         deactivate();
         return;
     }
@@ -84,7 +84,7 @@ void Projectile::applyDamage(Damageable* target)
 
 bool Projectile::isOffscreen() const
 {
-    auto pos = getPosition();
+    Vector2f pos = getPosition();
     return (pos.x < 0.f || pos.x > SCREEN_WIDTH ||
             pos.y < 0.f || pos.y > SCREEN_HEIGHT);
 }

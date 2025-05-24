@@ -39,7 +39,7 @@ public:
     void draw(sf::RenderWindow& window);
 
     void setFirstWaypoint(Waypoint* first);
-    bool isDemonAlive() const;
+    bool isAlive() const override;
 
     bool canAttack() const override;
     bool shoot() override;

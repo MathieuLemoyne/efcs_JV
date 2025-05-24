@@ -69,6 +69,7 @@ float GameObject::getCollisionCircleRadius() const
 void GameObject::setCollisionCircleRadius(const float radius)
 {
 	collisionCircle.setRadius(radius);
+	collisionCircle.setPosition(getPosition().x, getPosition().y);
 }
 
 void GameObject::setPosition(const float x, const float y)

@@ -145,29 +145,52 @@ void SceneGame::update()
 		spawnedDemons++;
 	}
 
-	// Mise à jour des démons
+	// Mise à jour des démons et attaque
 	for (int i = 0; i < spawnedDemons; ++i)
 	{
 		Demon& demon = demons[i];
 		demon.update(deltaTime);
 
-		Tower* closestTower = nullptr;
-		float closestDist = demon.getAttackRange();
+		if (!demon.canAttack())
+			continue;
+
+		Tower* bestTarget = nullptr;
+		float        bestDist = demon.getAttackRange();
 
 		for (Tower* tower : towers)
 		{
-			float dist = distance(demon, *tower);
-			if (dist <= demon.getAttackRange() && dist < closestDist)
+			if (!tower->isAlive())
+				continue;
+			float d = distance(demon, *tower);
+			if (d < bestDist)
 			{
-				closestDist = dist;
-				closestTower = tower;
+				bestDist = d;
+				bestTarget = tower;
+			}
+		}
+		{
+			float dKing = distance(demon, kingTower);
+			if (dKing < bestDist)
+			{
+				bestDist = dKing;
+				bestTarget = &kingTower;
 			}
 		}
 
-		/*if (closestTower)
-			std::cout << "[DEBUG] Demon is attacking a tower!" << std::endl;
-			demon.shoot(closestTower);*/
+		if (bestTarget && demon.shoot())
+		{
+			std::cout << "[DEBUG] Demon shoot at target\n";
+			std::cout << "[DEBUG] Position Tower " << bestTarget->getPosition().x << " " << bestTarget->getPosition().y << "\n";
+			spawnProjectile(
+				ProjectileType::fireball,
+				demon.getPosition(),
+				bestTarget->getPosition(),
+				demon.getDamage(),
+				bestTarget
+			);
+		}
 	}
+
 
 	Tower* towerClosestToKing = nullptr;
 	float  minDistToKing = std::numeric_limits<float>::max();
@@ -184,6 +207,8 @@ void SceneGame::update()
 	// Mise à jour des tours
 	for (Tower* tower : towers)
 	{
+		if (!tower->isAlive()) continue;
+
 		tower->update(deltaTime);
 
 		Demon* bestTarget = nullptr;
@@ -195,7 +220,7 @@ void SceneGame::update()
 		for (int i = 0; i < spawnedDemons; ++i)
 		{
 			Demon& demon = demons[i];
-			if (!demon.isDemonAlive()) continue;
+			if (!demon.isAlive()) continue;
 
 			float dTower = distance(*tower, demon);
 			if (dTower > towerRange) continue;
@@ -224,8 +249,7 @@ void SceneGame::update()
 		{
 			ProjectileType type;
 			if (dynamic_cast<ArcherTower*>(tower)) type = ProjectileType::arrow;
-			else if (dynamic_cast<MageTower*>(tower))   type = ProjectileType::fireball;
-			else                                        type = ProjectileType::blast;
+			else if (dynamic_cast<MageTower*>(tower))   type = ProjectileType::blast;
 
 			spawnProjectile(
 				type,
@@ -245,19 +269,42 @@ void SceneGame::update()
 
 	for (int t = 0; t < 3; ++t) {
 		for (int i = 0; i < MAX_PER_TYPE; ++i) {
-			Projectile& projectile = projectiles[t][i];
+			Projectile& p = projectiles[t][i];
+			if (!p.isActive()) continue;
 
-			for (int d = 0; d < spawnedDemons; ++d) {
-				Demon& demon = demons[d];
-				if (!demon.isDemonAlive()) continue;
-
-				if (projectile.getGlobalBounds().intersects(demon.getGlobalBounds())) {
-					projectile.applyDamage(&demon);
-					break;
+			switch (static_cast<ProjectileType>(t)) {
+			case ProjectileType::arrow:
+			case ProjectileType::blast:
+				for (int d = 0; d < spawnedDemons; ++d) {
+					Demon& demon = demons[d];
+					if (!demon.isAlive()) continue;
+					if ((p.getGlobalBounds()).intersects(demon.getGlobalBounds())) {
+						p.applyDamage(&demon);
+						break;
+					}
 				}
+				break;
+
+			case ProjectileType::fireball:
+			{
+				bool hit = false;
+				for (Tower* tower : towers) {
+					if (!tower->isAlive()) continue;
+					if (p.getGlobalBounds().intersects(tower->getGlobalBounds())) {
+						p.applyDamage(tower);
+						hit = true;
+						break;
+					}
+				}
+				if (!hit && p.getGlobalBounds().intersects(kingTower.getGlobalBounds())) {
+					p.applyDamage(&kingTower);
+				}
+			}
+			break;
 			}
 		}
 	}
+
 }
 
 
@@ -325,7 +372,7 @@ float SceneGame::distance(const GameObject& a, const GameObject& b) const
 	return std::sqrt(delta.x * delta.x + delta.y * delta.y);
 }
 
-void SceneGame::spawnProjectile(ProjectileType type, const Vector2f& start, const Vector2f& target, int damage, Demon* targetPtr)
+void SceneGame::spawnProjectile(ProjectileType type, const Vector2f& start, const Vector2f& target, int damage, Damageable* targetPtr)
 {
 	int typeIndex = static_cast<int>(type);
 	int next = nextProjectile[typeIndex];
