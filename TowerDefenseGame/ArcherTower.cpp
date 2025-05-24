@@ -14,6 +14,7 @@ bool ArcherTower::init()
     setCollisionCircleRadius(radius);
     std::cout << " Collision circle Radius: " << getCollisionCircleRadius() << std::endl;
     attackCooldown = 0.8f;
+    activate();
     return true;
 }
 

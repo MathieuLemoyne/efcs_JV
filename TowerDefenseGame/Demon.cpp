@@ -33,6 +33,10 @@ void Demon::init() {
     attackCooldown = 1.05f - 0.05f * waveNumber;
     timeSinceLastAttack = 0.f;
 
+    FloatRect bounds = getGlobalBounds();
+    float radius = bounds.width / 4.f;
+    setCollisionCircleRadius(radius);
+
     activate();
 }
 
@@ -96,7 +100,6 @@ float Demon::getAttackRange() const {
 
 void Demon::takeDamage(int amount) {
     health -= amount;
-    std::cout << "life left: " << health << std::endl;
     if (health <= 0 && state != DemonState::Dying) {
         health = 0;
     

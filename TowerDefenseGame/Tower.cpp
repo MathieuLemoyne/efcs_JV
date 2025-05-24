@@ -55,5 +55,9 @@ float Tower::getAttackRange() const {
 
 void Tower::takeDamage(int amount) {
 	health -= amount;
-	if (health < 0) health = 0;
+    if (health < 0) 
+    {
+        health = 0;
+        deactivate();
+    }
 }

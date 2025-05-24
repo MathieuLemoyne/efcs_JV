@@ -261,50 +261,52 @@ void SceneGame::update()
 		}
 	}
 
-	for (int t = 0; t < 3; ++t) {
-		for (int i = 0; i < MAX_PER_TYPE; ++i) {
-			if(projectiles[t][i].isActive()) projectiles[t][i].update(deltaTime);
+	for (int t = 0; t < 3; ++t) 
+	{
+		for (int i = 0; i < MAX_PER_TYPE; ++i) 
+		{
+			if (projectiles[t][i].isActive()) projectiles[t][i].update(deltaTime);
 		}
 	}
 
 	for (int t = 0; t < 3; ++t) {
 		for (int i = 0; i < MAX_PER_TYPE; ++i) {
-			Projectile& p = projectiles[t][i];
-			if (!p.isActive()) continue;
+			Projectile& projectile = projectiles[t][i];
+			if (!projectile.isActive()) continue;
 
-			switch (static_cast<ProjectileType>(t)) {
+			ProjectileType type = static_cast<ProjectileType>(t);
+			switch (type) 
+			{
 			case ProjectileType::arrow:
 			case ProjectileType::blast:
 				for (int d = 0; d < spawnedDemons; ++d) {
 					Demon& demon = demons[d];
 					if (!demon.isAlive()) continue;
-					if ((p.getGlobalBounds()).intersects(demon.getGlobalBounds())) {
-						p.applyDamage(&demon);
+					if (projectile.isCircleColliding(demon)) {
+						projectile.applyDamage(&demon);
 						break;
 					}
 				}
 				break;
 
-			case ProjectileType::fireball:
-			{
+			case ProjectileType::fireball: {
 				bool hit = false;
 				for (Tower* tower : towers) {
 					if (!tower->isAlive()) continue;
-					if (p.getGlobalBounds().intersects(tower->getGlobalBounds())) {
-						p.applyDamage(tower);
+					if (projectile.isCircleColliding(*tower)) {
+						std::cout << "[DEBUG] Projectile hit a tower!\n";
+						projectile.applyDamage(tower);
 						hit = true;
 						break;
 					}
 				}
-				if (!hit && p.getGlobalBounds().intersects(kingTower.getGlobalBounds())) {
-					p.applyDamage(&kingTower);
+				if (!hit && projectile.isCircleColliding(kingTower)) {
+					projectile.applyDamage(&kingTower);
 				}
-			}
-			break;
+			} break;
 			}
 		}
 	}
-
 }
 
 
@@ -325,7 +327,7 @@ void SceneGame::draw()
 	}
 	for (int i = 0; i < emplacementCount; ++i) {
 		towerEmplacements[i].draw(renderWindow);
-		
+
 	}
 	for (Tower* tower : towers) {
 		tower->draw(renderWindow);
@@ -351,14 +353,14 @@ void SceneGame::createTower(sf::Vector2f position)
 		ArcherTower* newTower = new ArcherTower();
 		newTower->GameObject::setPosition(position);
 		newTower->init();
-		towers.push_back(newTower); 
+		towers.push_back(newTower);
 		std::cout << "[DEBUG] Archer Tower created at: " << position.x << ", " << position.y << std::endl;
 	}
 	else if (currentAction == ActionMode::CreateMageTower) {
 		MageTower* newTower = new MageTower();
 		newTower->GameObject::setPosition(position);
 		newTower->init();
-		towers.push_back(newTower); 
+		towers.push_back(newTower);
 		std::cout << "[DEBUG] Mage Tower created at: " << position.x << ", " << position.y << std::endl;
 	}
 	else {

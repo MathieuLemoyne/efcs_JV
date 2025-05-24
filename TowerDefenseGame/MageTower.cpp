@@ -11,6 +11,7 @@ bool MageTower::init() {
     setCollisionCircleRadius(getGlobalBounds().width / 4.f);
     attackCooldown = 1.5f;
 	barOffsetY = 95.f;
+    activate();
     return true;
 }
 
