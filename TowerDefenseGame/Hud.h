@@ -13,6 +13,8 @@ public:
 	void hudInit(const Texture& hudMaskTexture, const Font& font);
 	void draw(sf::RenderWindow& renderWindow);
 
+	void updateHud(int mana, int score, int kills, int wave, int highScore, String action);
+
 
 private:
 	static const int INSTRUCTIONS_NUMBER = 6;

@@ -6,6 +6,7 @@
 #include "TowerEmplacement.h"
 #include "ArcherTower.h"
 #include "MageTower.h"
+#include "Hud.h"
 
 SceneGame::SceneGame(RenderWindow& renderWindow, Event& event) : Scene(renderWindow, event)
 {
@@ -154,7 +155,6 @@ void SceneGame::update()
 			mana = maxMana;
 	}
 
-	// Mise à jour des démons et attaque
 	for (int i = 0; i < spawnedDemons; ++i)
 	{
 		Demon& demon = demons[i];
@@ -198,6 +198,7 @@ void SceneGame::update()
 				bestTarget
 			);
 		}
+        hud.updateHud(mana, 0, kills, 0, 0, ActionInString());
 	}
 
 
@@ -386,6 +387,7 @@ void SceneGame::createTower(sf::Vector2f position)
 void SceneGame::notify(Subject* subject) {
 	if (Demon* demon = dynamic_cast<Demon*>(subject)) {
 		mana += manaPerKill;
+		kills++;
 	}
 }
 
@@ -403,4 +405,18 @@ void SceneGame::spawnProjectile(ProjectileType type, const Vector2f& start, cons
 	projectiles[typeIndex][next].init(type, start, target, damage);
 	projectiles[typeIndex][next].setTarget(targetPtr);
 	nextProjectile[typeIndex] = (next + 1) % MAX_PER_TYPE;
+}
+String SceneGame::ActionInString() {
+	{
+		switch (currentAction)
+		{
+		case ActionMode::None: return "None";
+		case ActionMode::CreateArcherTower: return "CreateArcherTower";
+		case ActionMode::CreateMageTower: return "CreateMageTower";
+		case ActionMode::PlagueSpell: return "PlagueSpell";
+		case ActionMode::SacredLight: return "SacredLight";
+		case ActionMode::Pause: return "Pause";
+		default: return "Unknown";
+		}
+	}
 }

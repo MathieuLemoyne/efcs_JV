@@ -40,7 +40,14 @@ public:
 	SceneGame(RenderWindow& renderWindow, Event& event);
 	scenes run() override;
 	bool init() override;
-
+	enum class ActionMode {
+		None,
+		CreateArcherTower,
+		CreateMageTower,
+		PlagueSpell,
+		SacredLight,
+		Pause
+	};
 private:
 	void getInputs() override;
 	void update() override;
@@ -75,14 +82,7 @@ private:
 	float nextSpawnTime = 0.f;
 
 	KingTower kingTower;
-	enum class ActionMode {
-		None,
-		CreateArcherTower,
-		CreateMageTower,
-		PlagueSpell,
-		SacredLight,
-		Pause
-	};
+
 	ActionMode currentAction;
 	std::vector<Tower*> towers;
 
@@ -91,6 +91,8 @@ private:
 	int nextProjectile[3] = { 0, 0, 0 };
 
 	void spawnProjectile(ProjectileType type, const Vector2f& start, const Vector2f& target, int damage, Damageable* targetPtr);
+
+	String ActionInString();
 
 	int towerCount = 0;
 
@@ -102,5 +104,6 @@ private:
 	float manaPerKill = 5.f;
 
 	void notify(Subject* subject) override;
-
+	
+	int kills = 0;
 };

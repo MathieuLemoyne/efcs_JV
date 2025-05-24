@@ -1,5 +1,5 @@
 #include "Hud.h"
-
+#include "SceneGame.h"
 void Hud::hudInit(const Texture& hudMaskTexture, const Font& font)
 {
 	hudMask.setTexture(hudMaskTexture);
@@ -59,4 +59,56 @@ void Hud::draw(sf::RenderWindow& renderWindow)
 
 	for (int i = 0; i < INSTRUCTIONS_NUMBER; i++)
 		renderWindow.draw(instructionTexts[i]);
+}
+#include "Hud.h"
+#include "SceneGame.h"
+
+void Hud::updateHud(int mana, int score, int kills, int wave, int highScore, String action)
+{
+	manaText.setString("Mana - " + std::to_string(mana));
+	scoreText.setString("Score - " + std::to_string(score));
+	killsText.setString("Kills - " + std::to_string(kills));
+	waveText.setString("Wave - " + std::to_string(wave));
+	highScoreText.setString("HighScore - " + std::to_string(highScore));
+
+	for (int i = 1; i < INSTRUCTIONS_NUMBER; ++i)
+	{
+		instructionTexts[i].setFillColor(sf::Color::White);
+	}
+
+	if (action == "CreateArcherTower")
+	{
+		instructionTexts[1].setFillColor(sf::Color::Yellow);
+		specialStateText.setString("Placing an Archer Tower");
+		specialStateText.setFillColor(sf::Color::Yellow);
+	}
+	else if (action == "CreateMageTower")
+	{
+		instructionTexts[2].setFillColor(sf::Color::Yellow);
+		specialStateText.setString("Placing a Mage Tower");
+		specialStateText.setFillColor(sf::Color::Yellow);
+	}
+	else if (action == "PlagueSpell")
+	{
+		instructionTexts[3].setFillColor(sf::Color::Yellow);
+		specialStateText.setString("Casting Plague Spell");
+		specialStateText.setFillColor(sf::Color::Yellow);
+	}
+	else if (action == "SacredLight")
+	{
+		instructionTexts[4].setFillColor(sf::Color::Yellow);
+		specialStateText.setString("Casting Sacred Light");
+		specialStateText.setFillColor(sf::Color::Yellow);
+	}
+	else if (action == "Pause")
+	{
+		instructionTexts[5].setFillColor(sf::Color::Yellow);
+		specialStateText.setString("Game Paused");
+		specialStateText.setFillColor(sf::Color::Yellow);
+	}
+	else
+	{
+		specialStateText.setString("Instructions diverses ici!");
+		specialStateText.setFillColor(sf::Color::White);
+	}
 }
