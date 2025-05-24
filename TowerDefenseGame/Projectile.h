@@ -43,4 +43,5 @@ private:
     sf::Vector2f velocity;
     float speed;
     int damage;
+	Sound sound;
 };

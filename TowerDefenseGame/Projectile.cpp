@@ -21,14 +21,17 @@ void Projectile::init(ProjectileType type,
 	switch (type) {
 	case ProjectileType::arrow:
 		setTexture(ContentPipeline::getInstance().getArrowTexture(), true);
+		sound.setBuffer(ContentPipeline::getInstance().getArcherAttackSoundBuffer());
 		speed = 15.f * 60.f;
 		break;
 	case ProjectileType::blast:
 		setTexture(ContentPipeline::getInstance().getBlastTexture(), true);
+		sound.setBuffer(ContentPipeline::getInstance().getMageAttackSoundBuffer());
 		speed = 8.f * 60.f;
 		break;
 	case ProjectileType::fireball:
 		setTexture(ContentPipeline::getInstance().getFireballTexture(), true);
+		sound.setBuffer(ContentPipeline::getInstance().getDemonAttackSoundBuffer());
 		speed = 10.f * 60.f;
 		break;
 	}
@@ -93,6 +96,7 @@ void Projectile::update(float dt)
 void Projectile::applyDamage(Damageable* target)
 {
 	if (target && isActive()) {
+		sound.play();
 		target->takeDamage(damage);
 		deactivate();
 	}
