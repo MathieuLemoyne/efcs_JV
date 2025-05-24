@@ -7,6 +7,7 @@
 #include "ArcherTower.h"
 #include "MageTower.h"
 #include "Hud.h"
+#include "Spell.h"
 
 SceneGame::SceneGame(RenderWindow& renderWindow, Event& event) : Scene(renderWindow, event)
 {
@@ -103,6 +104,14 @@ void SceneGame::getInputs()
 					break;
 				}
 			}
+			if (currentAction == ActionMode::PlagueSpell || currentAction == ActionMode::SacredLight) {
+				std::cout << "[DEBUG] Spawn Spell clicked\n";
+				Spell* spell = new Spell();
+				spell->init();
+				spell->activateSpell(mousePos, currentAction == ActionMode::PlagueSpell ? SpellType::plague : SpellType::sacredLight);
+				spells.push_back(spell);
+			}
+
 		}
 
 		if (event.type == sf::Event::KeyPressed) {
@@ -324,6 +333,10 @@ void SceneGame::update()
     if (mana > maxMana)
         mana = maxMana;
 }
+	for (Spell* spell : spells) {
+		spell->update(deltaTime);
+	}
+	spells.erase(std::remove(spells.begin(), spells.end(), nullptr), spells.end());
 }
 
 
@@ -354,6 +367,9 @@ void SceneGame::draw()
 		for (int i = 0; i < MAX_PER_TYPE; ++i) {
 			projectiles[t][i].draw(renderWindow);
 		}
+	}
+	for (Spell* spell : spells) {
+		spell->draw(renderWindow);
 	}
 
 	hud.draw(renderWindow);

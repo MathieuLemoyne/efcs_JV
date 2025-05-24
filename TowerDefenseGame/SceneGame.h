@@ -8,6 +8,7 @@
 #include "TowerEmplacement.h"
 #include "IObserver.h"
 #include "Projectile.h"
+#include "Spell.h"
 /*
 Metrics de sceneGame OU du level 1 (à effacer à la fin)
 - Position de la tour du roi: 1138, 600
@@ -99,11 +100,13 @@ private:
 
 	float mana = 0.f;
 	float maxMana = 100.f;
-	float manaRegenRate = 1.f; // mana/sec
+	float manaRegenRate = 10.f; // mana/sec
 	float manaRegenTimer = 0.f;
 	float manaPerKill = 5.f;
 
 	void notify(Subject* subject) override;
 	
 	int kills = 0;
+
+	std::vector<Spell*> spells;
 };
