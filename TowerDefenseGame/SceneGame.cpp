@@ -122,7 +122,9 @@ void SceneGame::getInputs()
 	if (inputs.keyPPressed)
 	{
 		paused = !paused;
-		hud.setPauseState(paused);
+		currentAction = paused
+			 ? ActionMode::Pause
+			 : ActionMode::None;
 	}
 	else if (inputs.keyZPressed)
 	{
@@ -138,6 +140,7 @@ void SceneGame::getInputs()
 
 void SceneGame::update()
 {
+	hud.updateHud(mana, 0, kills, 0, 0, ActionInString());
 	if (paused) return;
 
 	for (int i = 0; i < emplacementCount; ++i)
@@ -197,7 +200,7 @@ void SceneGame::update()
 			continue;
 
 		Tower* bestTarget = nullptr;
-		float        bestDist = demon.getAttackRange();
+		float bestDist = demon.getAttackRange();
 
 		for (Tower* tower : towers)
 		{
@@ -231,7 +234,6 @@ void SceneGame::update()
 				bestTarget
 			);
 		}
-        hud.updateHud(mana, 0, kills, 0, 0, ActionInString());
 	}
 
 

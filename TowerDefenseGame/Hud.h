@@ -14,7 +14,6 @@ public:
 	void draw(sf::RenderWindow& renderWindow);
 
 	void updateHud(int mana, int score, int kills, int wave, int highScore, String action);
-	void setPauseState(bool isPaused);
 
 
 private:
