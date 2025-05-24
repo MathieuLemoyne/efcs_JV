@@ -14,6 +14,7 @@ public:
 	void draw(sf::RenderWindow& renderWindow);
 
 	void updateHud(int mana, int score, int kills, int wave, int highScore, String action);
+	void setPauseState(bool isPaused);
 
 
 private:
@@ -21,6 +22,8 @@ private:
 	static const int TEXT_POSITION_X = 1250;
 
 	bool endGame = false;
+	bool pauseState = false;
+
 
 	sf::Text specialStateText;
 

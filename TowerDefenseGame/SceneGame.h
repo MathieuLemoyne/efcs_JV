@@ -55,7 +55,7 @@ private:
 	void draw() override;
 	bool unload() override;
 
-	void createTower(sf::Vector2f position);
+	void createTower(Vector2f position, int emplacementIndex);
 
 	float distance(const GameObject& a, const GameObject& b) const;
 
@@ -70,6 +70,7 @@ private:
 
 	Waypoint waypoints[MAX_WAYPOINTS];
 	TowerEmplacement towerEmplacements[MAX_EMPLACEMENTS];
+	Tower* emplacementToTower[MAX_EMPLACEMENTS] = { nullptr };
 
 	int waypointCount = 0;
 	int emplacementCount = 0;
@@ -92,7 +93,6 @@ private:
 	int nextProjectile[3] = { 0, 0, 0 };
 
 	void spawnProjectile(ProjectileType type, const Vector2f& start, const Vector2f& target, int damage, Damageable* targetPtr);
-
 	String ActionInString();
 
 	int towerCount = 0;
@@ -105,8 +105,10 @@ private:
 	float manaPerKill = 5.f;
 
 	void notify(Subject* subject) override;
-	
+
 	int kills = 0;
 
 	std::vector<Spell*> spells;
+
+	bool paused = false;
 };

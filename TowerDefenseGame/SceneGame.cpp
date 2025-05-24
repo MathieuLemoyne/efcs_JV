@@ -18,6 +18,7 @@ Scene::scenes SceneGame::run()
 {
 	while (isRunning)
 	{
+		inputs.reset();
 		calculateDeltaTime();
 		getInputs();
 		update();
@@ -39,7 +40,7 @@ bool SceneGame::init()
 
 
 	Waypoint* previous = nullptr;
-	for (const auto& pos : WAYPOINTS_MAP1) {
+	for (const Vector2f& pos : WAYPOINTS_MAP1) {
 		waypoints[waypointCount].setPosition(pos);
 		waypoints[waypointCount].activate();
 		waypoints[waypointCount].init();
@@ -49,7 +50,7 @@ bool SceneGame::init()
 
 		waypointCount++;
 	}
-	for (const auto& pos : EMPLACEMENTS_MAP1) {
+	for (const Vector2f& pos : EMPLACEMENTS_MAP1) {
 		towerEmplacements[emplacementCount].setPosition(pos);
 		towerEmplacements[emplacementCount].activate();
 		towerEmplacements[emplacementCount].init();
@@ -83,68 +84,91 @@ bool SceneGame::init()
 
 void SceneGame::getInputs()
 {
-	//On passe l'événement en référence et celui-ci est chargé du dernier événement reçu!
+	sf::Event event;
 	while (renderWindow.pollEvent(event))
 	{
-		//x sur la fenêtre
-		if (event.type == Event::Closed) exitGame();
-		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::W) {
-			std::cout << "[DEBUG] Touche W pressée " << std::endl;
-			showWaypoints = !showWaypoints;
+		if (event.type == sf::Event::Closed)
+			exitGame();
+
+		if (event.type == sf::Event::MouseButtonPressed &&
+			event.mouseButton.button == sf::Mouse::Left)
+		{
+			inputs.mouseLeftButtonClicked = true;
+			inputs.mousePosition = renderWindow.mapPixelToCoords(
+				{ event.mouseButton.x, event.mouseButton.y }
+			);
 		}
 
-		if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
+		if (event.type == sf::Event::KeyPressed)
 		{
-			Vector2f mousePos = renderWindow.mapPixelToCoords(Vector2i(event.mouseButton.x, event.mouseButton.y));
-
-			for (int i = 0; i < emplacementCount; ++i) {
-				if (towerEmplacements[i].isMouseOver(mousePos)) {
-					createTower(towerEmplacements[i].getPosition());
-					towerEmplacements[i].deactivate();
-					break;
-				}
+			switch (event.key.code)
+			{
+			case Keyboard::Z: inputs.keyZPressed = true; break;
+			case Keyboard::X: inputs.keyXPressed = true; break;
+			case Keyboard::P: inputs.keyPPressed = true; break;
+			default: break;
 			}
 			if (currentAction == ActionMode::PlagueSpell || currentAction == ActionMode::SacredLight) {
 				std::cout << "[DEBUG] Spawn Spell clicked\n";
 				Spell* spell = new Spell();
 				spell->init();
-				spell->activateSpell(mousePos, currentAction == ActionMode::PlagueSpell ? SpellType::plague : SpellType::sacredLight);
+				spell->activateSpell(inputs.mousePosition, currentAction == ActionMode::PlagueSpell ? SpellType::plague : SpellType::sacredLight);
 				spells.push_back(spell);
 			}
 
 		}
+	}
 
-		if (event.type == sf::Event::KeyPressed) {
-			switch (event.key.code) {
-			case sf::Keyboard::Z:
-				currentAction = ActionMode::CreateArcherTower;
-				std::cout << "[DEBUG] ActionMode: Archer Tower\n";
-				break;
-			case sf::Keyboard::X:
-				currentAction = ActionMode::CreateMageTower;
-				std::cout << "[DEBUG] ActionMode: Mage Tower\n";
-				break;
-			case sf::Keyboard::A:
-				currentAction = ActionMode::PlagueSpell;
-				std::cout << "[DEBUG] ActionMode: Plague Spell\n";
-				break;
-			case sf::Keyboard::S:
-				currentAction = ActionMode::SacredLight;
-				std::cout << "[DEBUG] ActionMode: Sacred Light\n";
-				break;
-			case sf::Keyboard::P:
-				currentAction = ActionMode::Pause;
-				std::cout << "[DEBUG] ActionMode: Pause\n";
-				break;
-			default:
+	if (inputs.keyPPressed)
+	{
+		paused = !paused;
+		hud.setPauseState(paused);
+	}
+	else if (inputs.keyZPressed)
+	{
+		currentAction = ActionMode::CreateArcherTower;
+	}
+	else if (inputs.keyXPressed)
+	{
+		currentAction = ActionMode::CreateMageTower;
+	}
+}
+
+
+
+void SceneGame::update()
+{
+	if (paused) return;
+
+	for (int i = 0; i < emplacementCount; ++i)
+	{
+		Tower* t = emplacementToTower[i];
+		if (t && !t->isAlive())
+		{
+			towerEmplacements[i].activate();
+			towerEmplacements[i].init();
+
+			emplacementToTower[i] = nullptr;
+		}
+	}
+
+
+	if (inputs.mouseLeftButtonClicked &&
+		(currentAction == ActionMode::CreateArcherTower ||
+			currentAction == ActionMode::CreateMageTower))
+	{
+		for (int i = 0; i < emplacementCount; ++i)
+		{
+			if (emplacementToTower[i] == nullptr &&
+				towerEmplacements[i].isMouseOver(inputs.mousePosition))
+			{
+				createTower(towerEmplacements[i].getPosition(), i);
+				towerEmplacements[i].deactivate();
 				break;
 			}
 		}
 	}
-}
 
-void SceneGame::update()
-{
 	spawnTimer += deltaTime;
 	manaRegenTimer += deltaTime;
 
@@ -356,7 +380,7 @@ void SceneGame::draw()
 		demons[i].draw(renderWindow);
 	}
 	for (int i = 0; i < emplacementCount; ++i) {
-		towerEmplacements[i].draw(renderWindow);
+		if(towerEmplacements[i].isActive()) towerEmplacements[i].draw(renderWindow);
 
 	}
 	for (Tower* tower : towers) {
@@ -380,26 +404,41 @@ bool SceneGame::unload()
 {
 	return true;
 }
-void SceneGame::createTower(sf::Vector2f position)
+
+// SceneGame.cpp
+
+void SceneGame::createTower(Vector2f position, int emplacementIndex)
 {
 	if (currentAction == ActionMode::CreateArcherTower) {
 		ArcherTower* newTower = new ArcherTower();
 		newTower->GameObject::setPosition(position);
 		newTower->init();
 		towers.push_back(newTower);
-		std::cout << "[DEBUG] Archer Tower created at: " << position.x << ", " << position.y << std::endl;
+
+		emplacementToTower[emplacementIndex] = newTower;
+		towerEmplacements[emplacementIndex].deactivate();
+
+		std::cout << "[DEBUG] Archer Tower created at: "
+			<< position.x << ", " << position.y << std::endl;
 	}
 	else if (currentAction == ActionMode::CreateMageTower) {
 		MageTower* newTower = new MageTower();
 		newTower->GameObject::setPosition(position);
 		newTower->init();
 		towers.push_back(newTower);
-		std::cout << "[DEBUG] Mage Tower created at: " << position.x << ", " << position.y << std::endl;
+
+		emplacementToTower[emplacementIndex] = newTower;
+		towerEmplacements[emplacementIndex].deactivate();
+
+		std::cout << "[DEBUG] Mage Tower created at: "
+			<< position.x << ", " << position.y << std::endl;
 	}
 	else {
 		std::cout << "[DEBUG] Invalid action mode for tower creation." << std::endl;
 	}
 }
+
+
 void SceneGame::notify(Subject* subject) {
 	if (Demon* demon = dynamic_cast<Demon*>(subject)) {
 		mana += manaPerKill;

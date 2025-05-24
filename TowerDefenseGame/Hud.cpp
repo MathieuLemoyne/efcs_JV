@@ -29,6 +29,7 @@ void Hud::hudInit(const Texture& hudMaskTexture, const Font& font)
 	killsText.setString("Kills - 0");
 	scoreText.setString("Score - 0");
 	highScoreText.setString("HighScore - 0");
+	specialStateText.setString("");
 
 	for (int i = 0; i < INSTRUCTIONS_NUMBER; i++)
 	{
@@ -49,6 +50,7 @@ void Hud::hudInit(const Texture& hudMaskTexture, const Font& font)
 
 void Hud::draw(sf::RenderWindow& renderWindow)
 {
+	if (pauseState) renderWindow.draw(specialStateText);
 	renderWindow.draw(hudMask);
 	renderWindow.draw(specialStateText);
 	renderWindow.draw(manaText);
@@ -60,8 +62,6 @@ void Hud::draw(sf::RenderWindow& renderWindow)
 	for (int i = 0; i < INSTRUCTIONS_NUMBER; i++)
 		renderWindow.draw(instructionTexts[i]);
 }
-#include "Hud.h"
-#include "SceneGame.h"
 
 void Hud::updateHud(int mana, int score, int kills, int wave, int highScore, String action)
 {
@@ -111,4 +111,13 @@ void Hud::updateHud(int mana, int score, int kills, int wave, int highScore, Str
 		specialStateText.setString("Instructions diverses ici!");
 		specialStateText.setFillColor(sf::Color::White);
 	}
+}
+
+void Hud::setPauseState(bool isPaused)
+{
+	pauseState = isPaused;
+	if (pauseState)
+		specialStateText.setString("Pause");
+	else
+		specialStateText.setString("");
 }
