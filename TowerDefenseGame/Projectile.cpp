@@ -61,21 +61,34 @@ void Projectile::setTarget(Damageable* target)
 	targetPtr = target;
 }
 
-void Projectile::update(float deltaTime)
+void Projectile::update(float dt)
 {
-	if (!isActive())
-		return;
+	if (!isActive()) return;
 
-	if (targetPtr && !targetPtr->isAlive()) {
-		deactivate();
-		return;
+	if (targetPtr)
+	{
+		auto go = dynamic_cast<GameObject*>(targetPtr);
+		if (!go || !go->isActive())
+		{
+			deactivate();
+			return;
+		}
+		sf::Vector2f toTarget = go->getPosition() - getPosition();
+		float dist2 = toTarget.x * toTarget.x + toTarget.y * toTarget.y;
+		if (dist2 > 0.f)
+		{
+			float invLen = 1.f / std::sqrt(dist2);
+			sf::Vector2f dir = toTarget * invLen;
+			velocity = dir * speed;
+			setRotation(std::atan2(dir.y, dir.x) * 180.f / PI);
+		}
 	}
 
-	move(velocity * deltaTime);
-
-	if (isOffscreen())
-		deactivate();
+	move(velocity * dt);
+	if (isOffscreen()) deactivate();
 }
+
+
 
 void Projectile::applyDamage(Damageable* target)
 {
