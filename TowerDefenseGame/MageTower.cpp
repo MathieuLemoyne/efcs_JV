@@ -1,9 +1,11 @@
 #include "MageTower.h"
 #include "ContentPipeline.h"
 #include <cstdlib>
+#include <iostream>
 
 bool MageTower::init()
 {
+	std::cout << "MageTower::init()" << std::endl;
     setTexture(ContentPipeline::getInstance().getMageTowerTexture());
     setTextureRect(sf::IntRect(0, 0, 150, 150));
     setOrigin(75, 125);

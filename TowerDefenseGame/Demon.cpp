@@ -75,12 +75,12 @@ bool Demon::canAttack() const {
     return timeSinceLastAttack >= attackCooldown;
 }
 
-void Demon::shoot(Damageable* target) {
-    if (!canAttack() || !target) return;
-
-    target->takeDamage(getDamage());
+bool Demon::shoot() {
+    if (!canAttack()) return false;
     timeSinceLastAttack = 0.f;
+    return true;
 }
+
 
 int Demon::getDamage() const {
     return 5 + waveNumber;

@@ -5,7 +5,7 @@
 class Shooter
 {
 public:
-    virtual void shoot(Damageable* target) = 0;
+    virtual bool shoot() = 0;
 
     virtual int getDamage() const = 0;
     virtual float getAttackFrequency() const = 0;

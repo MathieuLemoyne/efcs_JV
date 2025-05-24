@@ -6,12 +6,12 @@ bool Tower::canAttack() const {
 	return timeSinceLastAttack >= attackCooldown;
 }
 
-void Tower::shoot(Damageable* target) {
-	if (!canAttack() || !target) return;
-
-	target->takeDamage(getDamage());
+bool Tower::shoot() {
+	if (!canAttack()) return false;
 	timeSinceLastAttack = 0.f;
+	return true;
 }
+
 
 int Tower::getDamage() const {
 	return damage;

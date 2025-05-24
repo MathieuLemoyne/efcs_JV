@@ -42,7 +42,7 @@ public:
     bool isDemonAlive() const;
 
     bool canAttack() const override;
-    void shoot(Damageable* target) override;
+    bool shoot() override;
     int getDamage() const override;
     float getAttackFrequency() const override;
     float getAttackRange() const;

@@ -6,6 +6,7 @@
 #include "KingTower.h"
 #include "Demon.h"
 #include "TowerEmplacement.h"
+#include "Projectile.h"
 /*
 Metrics de sceneGame OU du level 1 (à effacer à la fin)
 - Position de la tour du roi: 1138, 600
@@ -83,5 +84,12 @@ private:
 	};
 	ActionMode currentAction;
 	std::vector<Tower*> towers;
+
+	static constexpr int MAX_PER_TYPE = 50;
+	Projectile projectiles[3][MAX_PER_TYPE];
+	int nextProjectile[3] = { 0, 0, 0 };
+
+	void spawnProjectile(ProjectileType type, const Vector2f& start, const Vector2f& target, int damage, Demon* targetPtr);
+
 	int towerCount = 0;
 };

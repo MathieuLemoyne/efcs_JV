@@ -25,7 +25,7 @@ public:
 	Tower();
 
 	bool canAttack() const override;
-	void shoot(Damageable* target) override;
+	bool shoot() override;
 	void takeDamage(int amount) override;
 
 	float getAttackRange() const;

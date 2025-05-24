@@ -66,9 +66,14 @@ bool SceneGame::init()
 	}
 	spawnedDemons = 0;
 
+	for (int t = 0; t < 3; ++t) {
+		for (int i = 0; i < MAX_PER_TYPE; ++i) {
+			projectiles[t][i].deactivate();
+		}
+		nextProjectile[t] = 0;
+	}
 
 	nextSpawnTime = 1.f + static_cast<float>(rand()) / RAND_MAX * 2.f;
-
 
 	return true;
 }
@@ -85,15 +90,19 @@ void SceneGame::getInputs()
 			showWaypoints = !showWaypoints;
 		}
 
-		if (event.MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+		if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
+		{
 			Vector2f mousePos = renderWindow.mapPixelToCoords(Vector2i(event.mouseButton.x, event.mouseButton.y));
+
 			for (int i = 0; i < emplacementCount; ++i) {
 				if (towerEmplacements[i].isMouseOver(mousePos)) {
 					createTower(towerEmplacements[i].getPosition());
 					towerEmplacements[i].deactivate();
+					break;
 				}
 			}
 		}
+
 		if (event.type == sf::Event::KeyPressed) {
 			switch (event.key.code) {
 			case sf::Keyboard::Z:
@@ -142,8 +151,6 @@ void SceneGame::update()
 		Demon& demon = demons[i];
 		demon.update(deltaTime);
 
-		if (!demon.canAttack()) continue;
-
 		Tower* closestTower = nullptr;
 		float closestDist = demon.getAttackRange();
 
@@ -162,32 +169,94 @@ void SceneGame::update()
 			demon.shoot(closestTower);*/
 	}
 
+	Tower* towerClosestToKing = nullptr;
+	float  minDistToKing = std::numeric_limits<float>::max();
+	for (Tower* tower : towers) {
+		float d = distance(kingTower, *tower);
+		if (d < minDistToKing) {
+			minDistToKing = d;
+			towerClosestToKing = tower;
+		}
+	}
+
+	kingTower.update(deltaTime);
+
 	// Mise à jour des tours
 	for (Tower* tower : towers)
 	{
 		tower->update(deltaTime);
 
-		if (!tower->canAttack()) continue;
-
-		Demon* closestDemon = nullptr;
-		float closestDist = tower->getAttackRange();
+		Demon* bestTarget = nullptr;
+		float  towerRange = tower->getAttackRange();
+		float  kingRange = kingTower.getAttackRange();
+		float  bestDistKing = std::numeric_limits<float>::max();
+		float  bestDistTower = towerRange;
 
 		for (int i = 0; i < spawnedDemons; ++i)
 		{
 			Demon& demon = demons[i];
 			if (!demon.isDemonAlive()) continue;
 
-			float dist = distance(*tower, demon);
-			if (dist <= tower->getAttackRange() && dist < closestDist)
+			float dTower = distance(*tower, demon);
+			if (dTower > towerRange) continue;
+
+			float dKing = distance(kingTower, demon);
+
+			if (dKing <= kingRange)
 			{
-				closestDist = dist;
-				closestDemon = &demon;
+				if (dKing < bestDistKing)
+				{
+					bestDistKing = dKing;
+					bestTarget = &demon;
+				}
+			}
+			else if (bestTarget == nullptr)
+			{
+				if (dTower < bestDistTower)
+				{
+					bestDistTower = dTower;
+					bestTarget = &demon;
+				}
 			}
 		}
 
-		if (closestDemon)
-			std::cout << "[DEBUG] Tower is attacking a Demon!" << std::endl;
-			tower->shoot(closestDemon);
+		if (bestTarget && tower->shoot())
+		{
+			ProjectileType type;
+			if (dynamic_cast<ArcherTower*>(tower)) type = ProjectileType::arrow;
+			else if (dynamic_cast<MageTower*>(tower))   type = ProjectileType::fireball;
+			else                                        type = ProjectileType::blast;
+
+			spawnProjectile(
+				type,
+				tower->getPosition(),
+				bestTarget->getPosition(),
+				tower->getDamage(),
+				bestTarget
+			);
+		}
+	}
+
+	for (int t = 0; t < 3; ++t) {
+		for (int i = 0; i < MAX_PER_TYPE; ++i) {
+			if(projectiles[t][i].isActive()) projectiles[t][i].update(deltaTime);
+		}
+	}
+
+	for (int t = 0; t < 3; ++t) {
+		for (int i = 0; i < MAX_PER_TYPE; ++i) {
+			Projectile& projectile = projectiles[t][i];
+
+			for (int d = 0; d < spawnedDemons; ++d) {
+				Demon& demon = demons[d];
+				if (!demon.isDemonAlive()) continue;
+
+				if (projectile.getGlobalBounds().intersects(demon.getGlobalBounds())) {
+					projectile.applyDamage(&demon);
+					break;
+				}
+			}
+		}
 	}
 }
 
@@ -213,6 +282,12 @@ void SceneGame::draw()
 	}
 	for (Tower* tower : towers) {
 		tower->draw(renderWindow);
+	}
+
+	for (int t = 0; t < 3; ++t) {
+		for (int i = 0; i < MAX_PER_TYPE; ++i) {
+			projectiles[t][i].draw(renderWindow);
+		}
 	}
 
 	hud.draw(renderWindow);
@@ -248,4 +323,14 @@ float SceneGame::distance(const GameObject& a, const GameObject& b) const
 {
 	Vector2f delta = a.getPosition() - b.getPosition();
 	return std::sqrt(delta.x * delta.x + delta.y * delta.y);
+}
+
+void SceneGame::spawnProjectile(ProjectileType type, const Vector2f& start, const Vector2f& target, int damage, Demon* targetPtr)
+{
+	int typeIndex = static_cast<int>(type);
+	int next = nextProjectile[typeIndex];
+
+	projectiles[typeIndex][next].init(type, start, target, damage);
+	projectiles[typeIndex][next].setTarget(targetPtr);
+	nextProjectile[typeIndex] = (next + 1) % MAX_PER_TYPE;
 }
