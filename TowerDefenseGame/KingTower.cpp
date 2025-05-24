@@ -7,24 +7,24 @@ KingTower::KingTower()
 
 bool KingTower::init()
 {
-    setPosition(KING_POS); 
-
-    activate();
-
+    Tower::init(true);
+    setPosition(KING_POS);
     setTexture(ContentPipeline::getInstance().getKingTowerTexture());
-
-    // set le collision circle ou hitbox ou whatever
-
+    setCollisionCircleRadius(getGlobalBounds().width / 4.f);
+    health = 500;
+	barOffsetY = 75.f;
+    activate();
     return true;
 }
-void KingTower::draw(RenderWindow& renderWindow)
-{
-    renderWindow.draw(*this);
-}
-void KingTower::update(float dt)
-{
-}
-void KingTower::shoot()
-{
+
+void KingTower::draw(RenderWindow& window) {
+    if (!isAlive()) return;
+    window.draw(healthBarBackground);
+    window.draw(healthBar);
+    window.draw(*this);
 }
 
+void KingTower::update(float dt)
+{
+    Tower::update(dt);
+}

@@ -1,22 +1,34 @@
 #include "MageTower.h"
 #include "ContentPipeline.h"
-bool MageTower::init()
-{
-	setTexture(ContentPipeline::getInstance().getMageTowerTexture());
-	setTextureRect(sf::IntRect(0, 0, 150, 150)); // a voir
-    setOrigin(75, 75);
+#include <cstdlib>
+#include <iostream>
 
-	return true;
+bool MageTower::init() {
+    Tower::init(false);
+    setTexture(ContentPipeline::getInstance().getMageTowerTexture());
+    setTextureRect(sf::IntRect(0, 0, 150, 150));
+    setOrigin(75, 105);
+    setCollisionCircleRadius(getGlobalBounds().width / 4.f);
+    attackCooldown = 1.5f;
+	barOffsetY = 95.f;
+    activate();
+    return true;
 }
 
-void MageTower::draw(RenderWindow& renderWindow)
-{
-	renderWindow.draw(*this);
+void MageTower::draw(RenderWindow& window) {
+    if (!isAlive()) return;
+    window.draw(healthBarBackground);
+    window.draw(healthBar);
+    window.draw(*this);
 }
+
 void MageTower::update(float dt)
 {
-// mettre lanimation
+    timeSinceLastAttack += dt;
+    Tower::update(dt);
+    // mettre lanimation
 }
-void MageTower::shoot()
-{
+
+int MageTower::getDamage() const {
+    return 1 + (std::rand() % 12);
 }

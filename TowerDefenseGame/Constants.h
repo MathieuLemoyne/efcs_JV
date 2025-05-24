@@ -1,4 +1,6 @@
 #pragma once
+#include <vector> 
+#include <SFML/Graphics.hpp>
 
 static const int SCREEN_WIDTH = 1680;
 static const int SCREEN_HEIGHT = 1050;

@@ -1,8 +1,10 @@
 #pragma once
 #include "Shooter.h"
+#include "Damageable.h"
 #include "Waypoint.h"
 #include "ContentPipeline.h"
 #include "Subject.h"
+
 
 //#include <SFML/Graphics.hpp>
 
@@ -25,52 +27,60 @@ enum class DemonState {
     Dying
 };
 
-class Demon : Shooter, Subject
+class Demon : public GameObject, public Shooter, public Subject, public Damageable
 {
 public:
     Demon();
     Demon(int waveNumber, const Vector2f& spawnPosition);
 
     void init();
-
+    void reset(int waveNumber, const Vector2f& spawnPosition);
     void update(float deltaTime);
     void draw(sf::RenderWindow& window);
 
     void setFirstWaypoint(Waypoint* first);
-    bool isDemonAlive() const;
+    bool isAlive() const override;
 
-    DemonState state = DemonState::Moving;
+    bool canAttack() const override;
+    bool shoot() override;
+    int getDamage() const override;
+    float getAttackFrequency() const override;
+    float getAttackRange() const;
 
-    void reset(int waveNumber, const Vector2f& spawnPosition);
-
-    void shoot() override;
-    bool canAttack();
+    void takeDamage(int amount) override;
 
     void startDyingAnimation();
 
+    DemonState state = DemonState::Moving;
+
 private:
-	// Variables de la classe
+    void updateAnimation(float deltaTime);
+    void updateMovement(float deltaTime);
+    void updateDyingAnimation(float deltaTime);
+    void updateHealthBar();
+
+    // Déplacement
+    Waypoint* currentWaypoint = nullptr;
+
+    // Statistiques
     float speed;
     int waveNumber;
     int health;
 
-	// Rectangle d'animation
+    // Visuel
     IntRect animationRect;
     float animationTime = 0.f;
     float animationSpeed = 0.1f;
     int currentFrame = 0;
 
-	// Cadence de tir
+    // Combat
     float attackCooldown;
-    float attackRange = 250.f;
     float timeSinceLastAttack = 0.f;
+    float attackRange = 250.f;
 
-
-    Waypoint* currentWaypoint;
-
-	// Health bar
-	Sprite healthBar;
-	Sprite healthBarBackground;
+    // Barre de vie
+    Sprite healthBar;
+    Sprite healthBarBackground;
 
     const int MAX_HEALTH = 60;
     const float BAR_WIDTH = 60;

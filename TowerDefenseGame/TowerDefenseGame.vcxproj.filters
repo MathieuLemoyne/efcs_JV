@@ -224,6 +224,12 @@
     <ClInclude Include="Shooter.h">
       <Filter>Fichiers d%27en-tête\Actors</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Damageable.h">
+      <Filter>Fichiers d%27en-tête\Actors</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Ressources\Sprites\Maps\Map1.png">
@@ -344,5 +350,10 @@
     <None Include="Ressources\Sounds\Music\VictoryTheme.ogg">
       <Filter>Fichiers de ressources\Sounds\Music</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="TowerDefenseGame.rc">
+      <Filter>Fichiers de ressources</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
