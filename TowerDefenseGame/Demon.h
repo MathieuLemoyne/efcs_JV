@@ -4,6 +4,8 @@
 #include "Waypoint.h"
 #include "ContentPipeline.h"
 #include "Subject.h"
+#include "Spell.h"
+#include "IObserver.h"
 
 
 //#include <SFML/Graphics.hpp>
@@ -27,7 +29,7 @@ enum class DemonState {
     Dying
 };
 
-class Demon : public GameObject, public Shooter, public Subject, public Damageable
+class Demon : public GameObject, public Shooter, public Subject, public Damageable, public IObserver
 {
 public:
     Demon();
@@ -40,6 +42,8 @@ public:
 
     void setFirstWaypoint(Waypoint* first);
     bool isAlive() const override;
+
+    void notify(Subject* subject) override;
 
     bool canAttack() const override;
     bool shoot() override;
@@ -84,4 +88,7 @@ private:
 
     const int MAX_HEALTH = 60;
     const float BAR_WIDTH = 60;
+    float sacredLightSpeedMultiplier = 1.f;  
+    float plagueDamageMultiplier = 1.f;     
+
 };

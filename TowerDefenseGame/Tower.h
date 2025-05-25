@@ -3,6 +3,7 @@
 #include "Shooter.h"
 #include "Damageable.h"
 #include "ContentPipeline.h"
+#include "IObserver.h"
 /*
 Metrics des tours  (à effacer à la fin)
 
@@ -17,7 +18,7 @@ Metrics des tours  (à effacer à la fin)
 */
 
 
-class Tower : public GameObject, public Shooter, public Damageable
+class Tower : public GameObject, public Shooter, public Damageable, public IObserver
 {
 public:
 	virtual void draw(sf::RenderWindow& window) = 0;
@@ -31,6 +32,10 @@ public:
 	bool canAttack() const override;
 	bool shoot() override;
 	void takeDamage(int amount) override;
+
+	void heal(int amount);
+
+	void notify(Subject* subject) override;
 
 	float getAttackRange() const;
 	virtual int getDamage() const override;
@@ -52,4 +57,7 @@ protected:
 	const int MAX_HEALTH = 250;
 	const float BAR_WIDTH = 60;
 	float barOffsetY = 70.f;
+
+	float plagueDamageMultiplier = 1.f;
+
 };

@@ -78,31 +78,31 @@ void Hud::updateHud(int mana, int score, int kills, int wave, int highScore, Str
 
 	if (action == "CreateArcherTower")
 	{
-		instructionTexts[1].setFillColor(sf::Color::Yellow);
+		instructionTexts[1].setFillColor(sf::Color(212, 175, 55, 255));
 		specialStateText.setString("Placing an Archer Tower");
 		specialStateText.setFillColor(sf::Color::Yellow);
 	}
 	else if (action == "CreateMageTower")
 	{
-		instructionTexts[2].setFillColor(sf::Color::Yellow);
+		instructionTexts[2].setFillColor(sf::Color(212, 175, 55, 255));
 		specialStateText.setString("Placing a Mage Tower");
 		specialStateText.setFillColor(sf::Color::Yellow);
 	}
 	else if (action == "PlagueSpell")
 	{
-		instructionTexts[3].setFillColor(sf::Color::Yellow);
+		instructionTexts[3].setFillColor(sf::Color(212, 175, 55, 255));
 		specialStateText.setString("Casting Plague Spell");
 		specialStateText.setFillColor(sf::Color::Yellow);
 	}
 	else if (action == "SacredLight")
 	{
-		instructionTexts[4].setFillColor(sf::Color::Yellow);
+		instructionTexts[4].setFillColor(sf::Color(212, 175, 55, 255));
 		specialStateText.setString("Casting Sacred Light");
 		specialStateText.setFillColor(sf::Color::Yellow);
 	}
 	else if (action == "Pause")
 	{
-		instructionTexts[5].setFillColor(sf::Color::Yellow);
+		instructionTexts[5].setFillColor(sf::Color(212, 175, 55, 255));
 		specialStateText.setString("Game Paused");
 		specialStateText.setFillColor(sf::Color::Yellow);
 	}

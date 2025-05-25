@@ -143,7 +143,7 @@ void SceneGame::getInputs()
 
 void SceneGame::update()
 {
-	hud.updateHud(mana, 0, kills, 0, 0, ActionInString());
+	hud.updateHud(mana, score, kills, 0, 0, ActionInString());
 	if (paused) return;
 
 	respawnDeadTowers();
@@ -350,6 +350,7 @@ void SceneGame::handleArrowOrBlastCollision(Projectile& p)
 		if (p.isCircleColliding(demon))
 		{
 			p.applyDamage(&demon);
+			score += p.getDamage();
 			break;
 		}
 	}
@@ -387,20 +388,18 @@ void SceneGame::updateSpellsLogic()
 void SceneGame::processSpellCasting()
 {
 	if (inputs.mouseLeftButtonClicked &&
-		(currentAction == ActionMode::PlagueSpell ||
-			currentAction == ActionMode::SacredLight))
+		(currentAction == ActionMode::PlagueSpell || currentAction == ActionMode::SacredLight))
 	{
 		Spell* spell = new Spell();
 		spell->init();
 		spell->activateSpell(
 			inputs.mousePosition,
-			currentAction == ActionMode::PlagueSpell
-			? SpellType::plague
-			: SpellType::sacredLight
+			currentAction == ActionMode::PlagueSpell ? SpellType::plague : SpellType::sacredLight
 		);
 		spells.push_back(spell);
 	}
 }
+
 
 
 
@@ -457,6 +456,7 @@ void SceneGame::createTower(Vector2f position, int emplacementIndex)
 
 		emplacementToTower[emplacementIndex] = newTower;
 		towerEmplacements[emplacementIndex].deactivate();
+		Subject::addObserver(newTower);
 
 		std::cout << "[DEBUG] Archer Tower created at: "
 			<< position.x << ", " << position.y << std::endl;
@@ -469,6 +469,8 @@ void SceneGame::createTower(Vector2f position, int emplacementIndex)
 
 		emplacementToTower[emplacementIndex] = newTower;
 		towerEmplacements[emplacementIndex].deactivate();
+		Subject::addObserver(newTower);
+
 
 		std::cout << "[DEBUG] Mage Tower created at: "
 			<< position.x << ", " << position.y << std::endl;
@@ -481,6 +483,7 @@ void SceneGame::createTower(Vector2f position, int emplacementIndex)
 
 void SceneGame::notify(Subject* subject) {
 	if (Demon* demon = dynamic_cast<Demon*>(subject)) {
+		std::cout << "[DEBUG] Demon killed." << std::endl;
 		mana += manaPerKill;
 		kills++;
 	}

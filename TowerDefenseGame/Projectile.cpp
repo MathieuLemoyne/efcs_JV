@@ -108,3 +108,8 @@ bool Projectile::isOffscreen() const
 	return (pos.x < 0.f || pos.x > SCREEN_WIDTH ||
 		pos.y < 0.f || pos.y > SCREEN_HEIGHT);
 }
+
+int Projectile::getDamage()
+{
+	return this->damage;
+}

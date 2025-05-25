@@ -26,9 +26,14 @@ public:
     bool init();
     void activateSpell(const sf::Vector2f& position, SpellType type);
     void update(float deltaTime);
+    SpellType getType();
+    float getDuration() const { return duration; }
+    float getRange() const { return 400.f; }
 private:
     float lifeTime;
     float duration;
     float rotationSpeed;
 	SpellType type;
+    Sprite rune;
+
 };

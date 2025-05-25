@@ -54,3 +54,8 @@ void Spell::update(float deltaTime)
         deactivate();
 }
 
+SpellType Spell::getType()
+{
+    return this->type;
+}
+

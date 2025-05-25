@@ -1,4 +1,6 @@
 #include "Tower.h"
+#include "Spell.h"
+#include <iostream>
 
 Tower::Tower() {}
 
@@ -54,10 +56,48 @@ float Tower::getAttackRange() const {
 }
 
 void Tower::takeDamage(int amount) {
-	health -= amount;
+	health -= amount*plagueDamageMultiplier;
     if (health < 0) 
     {
         health = 0;
         deactivate();
     }
+    
 }
+void Tower::heal(int amount) {
+	health += amount;
+	if (health > maxHealth) health = maxHealth;
+}
+void Tower::notify(Subject* subject) {
+    Spell* spell = dynamic_cast<Spell*>(subject);
+    if (!spell || !isActive()) return;
+    sf::Vector2f posA = getPosition();
+    sf::Vector2f posB = spell->getPosition();
+
+    float dx = posB.x - posA.x;
+    float dy = posB.y - posA.y;
+
+    float distance = std::sqrt(dx * dx + dy * dy);
+    if (distance > spell->getRange()) return;
+
+    switch (spell->getType()) {
+    case SpellType::sacredLight:
+    {
+        int heal = rand() % 10 + 6; // [6, 15]
+        this->heal(heal);
+        attackCooldown /= 2.f;
+		std::cout << "[DEBUG] Tower healed by " << heal << " points.\n";
+    }
+    break;
+    case SpellType::plague:
+    {
+        int damage = 1 + (std::rand() % 10);
+        takeDamage(damage);
+        plagueDamageMultiplier = 2.f;
+    }
+    break;
+    default:
+        break;
+    }
+};
+

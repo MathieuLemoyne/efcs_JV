@@ -36,6 +36,7 @@ public:
     void applyDamage(Damageable* target);
 
     bool isOffscreen() const;
+    int getDamage();
 
 private:
     ProjectileType type;

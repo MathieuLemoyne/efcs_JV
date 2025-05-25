@@ -1,7 +1,6 @@
 #include "Demon.h"
 #include <cmath>
 #include <iostream>
-
 Demon::Demon() : waveNumber(1), speed(90.f + 10.f * waveNumber) {
     init();
 }
@@ -104,6 +103,7 @@ void Demon::takeDamage(int amount) {
         health = 0;
     
         startDyingAnimation();
+		notifyAllObservers();
     }
 }
 
@@ -179,3 +179,39 @@ void Demon::setFirstWaypoint(Waypoint* first) {
 bool Demon::isAlive() const {
     return isActive();
 }
+void Demon::notify(Subject* subject) {
+    Spell* spell = dynamic_cast<Spell*>(subject);
+    if (!spell || !isActive()) return;
+
+    sf::Vector2f demonPos = getPosition();
+    sf::Vector2f spellPos = spell->getPosition();
+
+    float dx = spellPos.x - demonPos.x;
+    float dy = spellPos.y - demonPos.y;
+    float distance = std::sqrt(dx * dx + dy * dy);
+
+    if (distance > spell->getRange()) return;
+
+    switch (spell->getType()) {
+    case SpellType::plague:
+    {
+        int damage = 1 + (std::rand() % 10);
+        takeDamage(damage);
+        plagueDamageMultiplier = 2.f; 
+    }
+    break;
+
+    case SpellType::sacredLight:
+    {
+        int damage = 1 + (std::rand() % 5);
+        takeDamage(damage);
+        sacredLightSpeedMultiplier = 0.5f;
+    }
+    break;
+
+    default:
+        break;
+    }
+}
+
+

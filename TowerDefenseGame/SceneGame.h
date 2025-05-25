@@ -113,15 +113,16 @@ private:
 	int towerCount = 0;
 
 
-	float mana = 0.f;
-	float maxMana = 100.f;
-	float manaRegenRate = 10.f; // mana/sec
+	float mana = 500.f;
+	float maxMana = 10000.f;
+	float manaRegenRate = 5.f; // mana/sec
 	float manaRegenTimer = 0.f;
-	float manaPerKill = 5.f;
+	float manaPerKill = 25.f;
 
 	void notify(Subject* subject) override;
 
 	int kills = 0;
+	int score = 0;
 
 	std::vector<Spell*> spells;
 
