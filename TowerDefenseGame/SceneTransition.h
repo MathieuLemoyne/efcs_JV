@@ -10,6 +10,7 @@ public:
 	scenes run() override;
 	bool init() override;
 
+	static int phase;
 private:
 	void getInputs() override;
 	void update() override;
@@ -20,8 +21,5 @@ private:
 
 	Font font;
 	Text message;
-
-	int phase = 0;
-
 	Clock timer;
 };

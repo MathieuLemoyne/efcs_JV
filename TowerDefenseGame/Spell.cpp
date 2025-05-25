@@ -58,4 +58,3 @@ SpellType Spell::getType()
 {
     return this->type;
 }
-

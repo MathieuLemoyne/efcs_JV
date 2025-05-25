@@ -49,6 +49,11 @@ public:
 		SacredLight,
 		Pause
 	};
+
+	int getLevel() const { return level; }
+	int getKills() const { return kills; }
+
+	static constexpr int KILL_TRESHOLD = 50;
 private:
 	void getInputs() override;
 	void update() override;
@@ -73,6 +78,9 @@ private:
 	void handleFireballCollision(Projectile& p);
 	void updateSpellsLogic();
 	void processSpellCasting();
+
+	void checkKingTowerDeath();
+	void checkLevelCompletion();
 
 	void loadLevel1();
 	void loadLevel2();
@@ -115,7 +123,6 @@ private:
 
 	int towerCount = 0;
 
-
 	float mana = 500.f;
 	float maxMana = 10000.f;
 	float manaRegenRate = 5.f; // mana/sec
@@ -129,7 +136,7 @@ private:
 
 	void notify(Subject* subject) override;
 
-	int kills = 0;
+	int kills = 49;
 	int score = 0;
 
 	std::vector<Spell*> spells;

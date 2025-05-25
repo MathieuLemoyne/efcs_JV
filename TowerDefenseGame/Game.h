@@ -16,4 +16,6 @@ private:
 	Event event;
 
 	Image icon;
+
+	bool victory;
 };

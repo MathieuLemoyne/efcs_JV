@@ -133,13 +133,22 @@ void SceneGame::update()
 
 	respawnDeadTowers();
 	processTowerPlacement();
+	
 	updateSpawnAndMana();
 	processDemonsAttacks();
+
 	updateKingTowerLogic();
+	checkKingTowerDeath();
+	if (!isRunning) return;
+
+
 	processTowersAttacks();
 	updateProjectilesCollisions();
+
 	updateSpellsLogic();
 	processSpellCasting();
+
+	checkLevelCompletion();
 }
 
 void SceneGame::respawnDeadTowers()
@@ -179,13 +188,42 @@ void SceneGame::updateSpawnAndMana()
 	spawnTimer += deltaTime;
 	manaRegenTimer += deltaTime;
 
-	if (spawnTimer >= nextSpawnTime && spawnedDemons < MAX_DEMONS)
+	if (spawnTimer >= nextSpawnTime)
 	{
 		spawnTimer = 0.f;
-		nextSpawnTime = 1.f + static_cast<float>(rand()) / RAND_MAX * 2.f;
-		demonPathChoice[spawnedDemons] = (std::rand() % 2 == 0);
-		demons[spawnedDemons].setFirstWaypoint(&waypoints[0]);
-		spawnedDemons++;
+		nextSpawnTime = 1.f + static_cast<float>(std::rand()) / RAND_MAX * 2.f;
+
+		int slot = -1;
+		if (spawnedDemons < MAX_DEMONS) {
+			slot = spawnedDemons++;
+		}
+		else {
+			for (int i = 0; i < MAX_DEMONS; ++i)
+			{
+				if (!demons[i].isAlive())
+				{
+					slot = i;
+					break;
+				}
+			}
+		}
+		if (slot >= 0)
+		{
+			if (level == 2)
+				demonPathChoice[slot] = (std::rand() % 2 == 0);
+
+			demons[slot].reset(1,
+				(level == 1 ? DEMON_SPAWN_MAP1 : DEMON_SPAWN_MAP2)
+			);
+			demons[slot].setFirstWaypoint(&waypoints[0]);
+			if (level == 2)
+				demons[slot].setBranching(
+					&waypoints[splitNodeIndex],
+					&waypoints[branchAStartIndex],
+					&waypoints[branchBStartIndex],
+					demonPathChoice[slot]
+				);
+		}
 	}
 
 	if (manaRegenTimer >= 1.f) {
@@ -194,6 +232,7 @@ void SceneGame::updateSpawnAndMana()
 		if (mana > maxMana) mana = maxMana;
 	}
 }
+
 
 void SceneGame::processDemonsAttacks()
 {
@@ -414,18 +453,32 @@ void SceneGame::processSpellCasting()
 	spell->init();
 	spell->activateSpell(inputs.mousePosition, requested);
 
+	View currentView = renderWindow.getView();
+	Vector2f viewCenter = currentView.getCenter();
+	Vector2f viewSize = currentView.getSize();
+	FloatRect viewBounds(viewCenter.x - viewSize.x / 2.f, viewCenter.y - viewSize.y / 2.f, viewSize.x, viewSize.y);
+
 	float range = spell->getRange();
 	for (int i = 0; i < spawnedDemons; ++i)
 	{
 		Demon* demon = &demons[i];
-		if (demon->isAlive() && distance(*demon, *spell) <= range)
+		sf::Vector2f pos = demon->getPosition();
+		if (demon->isAlive() &&
+			distance(*demon, *spell) <= range &&
+			viewBounds.contains(pos))
+		{
 			spell->addObserver(demon);
+		}
 	}
 	for (Tower* tower : towers)
 	{
-		if (tower->isAlive() && distance(*tower, *spell) <= range)
+		if (tower->isAlive() &&
+			distance(*tower, *spell) <= range)
+		{
 			spell->addObserver(tower);
+		}
 	}
+
 
 	spells.push_back(spell);
 }
@@ -621,6 +674,7 @@ void SceneGame::loadLevel2()
 	for (int i = 0; i < MAX_DEMONS; ++i)
 	{
 		demons[i].reset(1, DEMON_SPAWN_MAP2);
+		demons[i].setFirstWaypoint(&waypoints[0]);
 
 		bool choice = (std::rand() % 2) == 0;
 
@@ -632,3 +686,25 @@ void SceneGame::loadLevel2()
 		);
 	}
 }
+
+void SceneGame::checkKingTowerDeath()
+{
+	if (!kingTower.isAlive()) {
+		isRunning = false;
+		transitionToScene = scenes::END;
+	}
+}
+
+void SceneGame::checkLevelCompletion()
+{
+	if (level == 1 && kills >= KILL_TRESHOLD) {
+		isRunning = false;
+		transitionToScene = scenes::TRANSITION;
+	}
+	else if (level == 2 && kills >= KILL_TRESHOLD) {
+		isRunning = false;
+		transitionToScene = scenes::END;
+	}
+}
+
+

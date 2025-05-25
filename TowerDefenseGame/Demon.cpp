@@ -48,7 +48,17 @@ void Demon::reset(int waveNumber, const Vector2f& spawnPosition) {
 	this->setPosition(spawnPosition);
 	this->animationTime = 0.f;
 	this->currentFrame = 0;
+	this->timeSinceLastAttack = 0.f;
+
+	plagueTimer = 0.f;
+	sacredLightTimer = 0.f;
+	plagueDamageMultiplier = 1.f;
+	sacredLightSpeedMultiplier = 1.f;
+
+	activate();
+	Subject::addObserver(this);
 }
+
 
 void Demon::update(float deltaTime) {
 	if (!isAlive()) return;
@@ -173,7 +183,7 @@ void Demon::updateMovement(float deltaTime) {
 	Vector2f pos = getPosition();
 	Vector2f target = currentWaypoint->getPosition();
 	Vector2f dir = target - pos;
-	float        dist = std::sqrt(dir.x * dir.x + dir.y * dir.y);
+	float dist = std::sqrt(dir.x * dir.x + dir.y * dir.y);
 
 	if (currentWaypoint == splitWaypoint && dist < 5.f) {
 		currentWaypoint = pathChoice
@@ -185,8 +195,7 @@ void Demon::updateMovement(float deltaTime) {
 	if (dist < 5.f) {
 		Waypoint* next = currentWaypoint->getNext();
 		currentWaypoint = next;
-		if (!next)
-			state = DemonState::AtEnd;
+		if (!next) state = DemonState::AtEnd;
 		return;
 	}
 
@@ -194,8 +203,6 @@ void Demon::updateMovement(float deltaTime) {
 	setScale(dir.x < 0.f ? -1.f : 1.f, 1.f);
 	move(dir * speed * sacredLightSpeedMultiplier * deltaTime);
 }
-
-
 
 void Demon::setFirstWaypoint(Waypoint* first) {
 	currentWaypoint = first;
@@ -257,5 +264,4 @@ void Demon::setBranching(Waypoint* split,
 	branchAWaypoint = aStart;
 	branchBWaypoint = bStart;
 	pathChoice = choice;
-	currentWaypoint = splitWaypoint;
 }

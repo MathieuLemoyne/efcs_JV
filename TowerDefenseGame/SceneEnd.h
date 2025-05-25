@@ -6,7 +6,7 @@ using namespace sf;
 class SceneEnd : public Scene
 {
 public:
-	SceneEnd(RenderWindow& renderWindow, Event& event);
+	SceneEnd(RenderWindow& renderWindow, Event& event, bool victory);
 	scenes run() override;
 	bool init() override;
 
