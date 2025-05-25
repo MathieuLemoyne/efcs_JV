@@ -29,7 +29,7 @@ int Game::run()
 	if (!ContentPipeline::getInstance().loadContent()) return EXIT_FAILURE;
 
 	//Un enum et un pointeur de scene pour faire la manipulation de scène
-	Scene::scenes sceneSelector = Scene::scenes::LEVEL1;
+	Scene::scenes sceneSelector = Scene::scenes::LEVEL2;
 	Scene* activeScene = nullptr; //Pointeur de la super-classe, peut pointer sur n'importe quelle scène
 
 	//Les variables de passage d'information entre scènes devraient être déclarés ici
@@ -55,8 +55,10 @@ int Game::run()
 			activeScene = new SceneTransition(renderWindow, event);
 			break;
 		case Scene::scenes::LEVEL1:
-			//Les deux attributs sont récessaire et passés par référence
-			activeScene = new SceneGame(renderWindow, event);
+			activeScene = new SceneGame(renderWindow, event, 1);
+			break;
+		case Scene::scenes::LEVEL2:
+			activeScene = new SceneGame(renderWindow, event, 2);
 			break;
 		case Scene::scenes::END:
 			activeScene = new SceneEnd(renderWindow, event);

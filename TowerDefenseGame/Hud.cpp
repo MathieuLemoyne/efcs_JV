@@ -60,8 +60,6 @@ void Hud::draw(sf::RenderWindow& renderWindow)
 	for (int i = 0; i < INSTRUCTIONS_NUMBER; i++)
 		renderWindow.draw(instructionTexts[i]);
 }
-#include "Hud.h"
-#include "SceneGame.h"
 
 void Hud::updateHud(int mana, int score, int kills, int wave, int highScore, String action)
 {

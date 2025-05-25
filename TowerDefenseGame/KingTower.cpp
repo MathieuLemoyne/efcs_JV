@@ -8,7 +8,6 @@ KingTower::KingTower()
 bool KingTower::init()
 {
     Tower::init(true);
-    setPosition(KING_POS);
     setTexture(ContentPipeline::getInstance().getKingTowerTexture());
     setCollisionCircleRadius(getGlobalBounds().width / 4.f);
     health = 500;

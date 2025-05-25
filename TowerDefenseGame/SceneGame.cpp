@@ -9,10 +9,12 @@
 #include "Hud.h"
 #include "Spell.h"
 
-SceneGame::SceneGame(RenderWindow& renderWindow, Event& event) : Scene(renderWindow, event)
+SceneGame::SceneGame(RenderWindow& renderWindow, Event& event, int level)
+	: Scene(renderWindow, event), level(level)
 {
 	view = renderWindow.getDefaultView();
 }
+
 
 Scene::scenes SceneGame::run()
 {
@@ -34,57 +36,41 @@ bool SceneGame::init()
 {
 	Subject::addObserver(this);
 	currentAction = ActionMode::None;
-	map.setTexture(ContentPipeline::getInstance().getMapTexture(Maps::map1));
+	waypointCount = 0;
+	emplacementCount = 0;
+	spawnedDemons = 0;
 
-	hud.hudInit(ContentPipeline::getInstance().getHudmaskTexture(), ContentPipeline::getInstance().getComiciFont());
+	hud.hudInit(
+		ContentPipeline::getInstance().getHudmaskTexture(),
+		ContentPipeline::getInstance().getComiciFont()
+	);
 
+	for (int i = 0; i < MAX_EMPLACEMENTS; ++i)
+		emplacementToTower[i] = nullptr;
 
-	Waypoint* previous = nullptr;
-	for (const Vector2f& pos : WAYPOINTS_MAP1) {
-		waypoints[waypointCount].setPosition(pos);
-		waypoints[waypointCount].activate();
-		waypoints[waypointCount].init();
+	for (int i = 0; i < MAX_EMPLACEMENTS; ++i)
+		towerEmplacements[i].activate(), towerEmplacements[i].init();
 
-		if (waypointCount > 0)
-			waypoints[waypointCount - 1].setNext(&waypoints[waypointCount]);
-
-		waypointCount++;
-	}
-	for (const Vector2f& pos : EMPLACEMENTS_MAP1) {
-		towerEmplacements[emplacementCount].setPosition(pos);
-		towerEmplacements[emplacementCount].activate();
-		towerEmplacements[emplacementCount].init();
-
-		emplacementCount++;
-	}
+	if (level == 1)
+		loadLevel1();
+	else
+		loadLevel2();
 
 	kingTower.init();
 
-	if (waypointCount > 0) {
-		demons[0].setFirstWaypoint(&waypoints[0]);
-		spawnedDemons = 1;
-	}
-
-	for (int i = 0; i < MAX_DEMONS; ++i) {
-		demons[i].reset(1, Vector2f(610.f, -100.f));
-	}
-	spawnedDemons = 0;
-
-	for (int t = 0; t < 3; ++t) {
-		for (int i = 0; i < MAX_PER_TYPE; ++i) {
+	for (int t = 0; t < 3; ++t)
+		for (int i = 0; i < MAX_PER_TYPE; ++i)
 			projectiles[t][i].deactivate();
-		}
-		nextProjectile[t] = 0;
-	}
+	std::fill(std::begin(nextProjectile), std::end(nextProjectile), 0);
 
-	nextSpawnTime = 1.f + static_cast<float>(rand()) / RAND_MAX * 2.f;
+	nextSpawnTime = 1.f + static_cast<float>(std::rand()) / RAND_MAX * 2.f;
 
 	return true;
 }
 
+
 void SceneGame::getInputs()
 {
-	// 1) On ne touche plus à currentAction ici !
 	inputs.reset();
 
 	sf::Event event;
@@ -93,7 +79,6 @@ void SceneGame::getInputs()
 		if (event.type == sf::Event::Closed)
 			exitGame();
 
-		// clic gauche
 		if (event.type == sf::Event::MouseButtonPressed &&
 			event.mouseButton.button == sf::Mouse::Left)
 		{
@@ -103,16 +88,13 @@ void SceneGame::getInputs()
 			);
 		}
 
-		// touché clavier
 		if (event.type == sf::Event::KeyPressed)
 		{
 			switch (event.key.code)
 			{
 			case sf::Keyboard::P:
 				paused = !paused;
-				currentAction = paused
-					? ActionMode::Pause
-					: ActionMode::None;
+				currentAction = paused ? ActionMode::Pause : ActionMode::None;
 				break;
 
 			case sf::Keyboard::Z:
@@ -131,6 +113,10 @@ void SceneGame::getInputs()
 				currentAction = ActionMode::SacredLight;
 				break;
 
+			case sf::Keyboard::W:
+				showWaypoints = !showWaypoints;
+				break;
+
 			default:
 				currentAction = ActionMode::None;
 				break;
@@ -139,7 +125,6 @@ void SceneGame::getInputs()
 	}
 }
 
-// — SceneGame.cpp —
 
 void SceneGame::update()
 {
@@ -184,7 +169,6 @@ void SceneGame::processTowerPlacement()
 			towerEmplacements[i].isMouseOver(inputs.mousePosition))
 		{
 			createTower(towerEmplacements[i].getPosition(), i);
-			towerEmplacements[i].deactivate();
 			break;
 		}
 	}
@@ -199,6 +183,7 @@ void SceneGame::updateSpawnAndMana()
 	{
 		spawnTimer = 0.f;
 		nextSpawnTime = 1.f + static_cast<float>(rand()) / RAND_MAX * 2.f;
+		demonPathChoice[spawnedDemons] = (std::rand() % 2 == 0);
 		demons[spawnedDemons].setFirstWaypoint(&waypoints[0]);
 		spawnedDemons++;
 	}
@@ -376,31 +361,74 @@ void SceneGame::handleFireballCollision(Projectile& p)
 	}
 }
 
-
 void SceneGame::updateSpellsLogic()
 {
-	for (Spell* spell : spells)
+	for (auto it = spells.begin(); it != spells.end(); )
+	{
+		Spell* spell = *it;
 		spell->update(deltaTime);
-	spells.erase(std::remove(spells.begin(), spells.end(), nullptr),
-		spells.end());
+
+		if (!spell->isActive())
+		{
+			delete spell;
+			it = spells.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
 }
 
 void SceneGame::processSpellCasting()
 {
-	if (inputs.mouseLeftButtonClicked &&
-		(currentAction == ActionMode::PlagueSpell || currentAction == ActionMode::SacredLight))
+	if (!inputs.mouseLeftButtonClicked)
+		return;
+
+	if (currentAction != ActionMode::PlagueSpell &&
+		currentAction != ActionMode::SacredLight)
 	{
-		Spell* spell = new Spell();
-		spell->init();
-		spell->activateSpell(
-			inputs.mousePosition,
-			currentAction == ActionMode::PlagueSpell ? SpellType::plague : SpellType::sacredLight
-		);
-		spells.push_back(spell);
+		return;
 	}
+
+	SpellType requested = (currentAction == ActionMode::PlagueSpell)
+		? SpellType::plague
+		: SpellType::sacredLight;
+
+	if (requested == SpellType::plague)
+	{
+		if (mana < plagueCost) return;
+		mana -= plagueCost;
+	}
+	else
+	{
+		if (mana < sacredLightCost) return;
+		mana -= sacredLightCost;
+	}
+
+	for (Spell* spell : spells)
+		if (spell->isActive() && spell->getType() == requested)
+			return;
+
+	Spell* spell = new Spell();
+	spell->init();
+	spell->activateSpell(inputs.mousePosition, requested);
+
+	float range = spell->getRange();
+	for (int i = 0; i < spawnedDemons; ++i)
+	{
+		Demon* demon = &demons[i];
+		if (demon->isAlive() && distance(*demon, *spell) <= range)
+			spell->addObserver(demon);
+	}
+	for (Tower* tower : towers)
+	{
+		if (tower->isAlive() && distance(*tower, *spell) <= range)
+			spell->addObserver(tower);
+	}
+
+	spells.push_back(spell);
 }
-
-
 
 
 void SceneGame::draw()
@@ -441,14 +469,17 @@ void SceneGame::draw()
 
 bool SceneGame::unload()
 {
+	Subject::removeObserver(this);
 	return true;
 }
 
-// SceneGame.cpp
 
 void SceneGame::createTower(Vector2f position, int emplacementIndex)
 {
 	if (currentAction == ActionMode::CreateArcherTower) {
+		if (mana < archerCost) return;
+		mana -= archerCost;
+
 		ArcherTower* newTower = new ArcherTower();
 		newTower->GameObject::setPosition(position);
 		newTower->init();
@@ -457,11 +488,11 @@ void SceneGame::createTower(Vector2f position, int emplacementIndex)
 		emplacementToTower[emplacementIndex] = newTower;
 		towerEmplacements[emplacementIndex].deactivate();
 		Subject::addObserver(newTower);
-
-		std::cout << "[DEBUG] Archer Tower created at: "
-			<< position.x << ", " << position.y << std::endl;
 	}
 	else if (currentAction == ActionMode::CreateMageTower) {
+		if (mana < mageCost) return;
+		mana -= mageCost;
+
 		MageTower* newTower = new MageTower();
 		newTower->GameObject::setPosition(position);
 		newTower->init();
@@ -471,19 +502,12 @@ void SceneGame::createTower(Vector2f position, int emplacementIndex)
 		towerEmplacements[emplacementIndex].deactivate();
 		Subject::addObserver(newTower);
 
-
-		std::cout << "[DEBUG] Mage Tower created at: "
-			<< position.x << ", " << position.y << std::endl;
-	}
-	else {
-		std::cout << "[DEBUG] Invalid action mode for tower creation." << std::endl;
 	}
 }
 
 
 void SceneGame::notify(Subject* subject) {
 	if (Demon* demon = dynamic_cast<Demon*>(subject)) {
-		std::cout << "[DEBUG] Demon killed." << std::endl;
 		mana += manaPerKill;
 		kills++;
 	}
@@ -504,6 +528,7 @@ void SceneGame::spawnProjectile(ProjectileType type, const Vector2f& start, cons
 	projectiles[typeIndex][next].setTarget(targetPtr);
 	nextProjectile[typeIndex] = (next + 1) % MAX_PER_TYPE;
 }
+
 String SceneGame::ActionInString() {
 	{
 		switch (currentAction)
@@ -516,5 +541,94 @@ String SceneGame::ActionInString() {
 		case ActionMode::Pause: return "Pause";
 		default: return "Unknown";
 		}
+	}
+}
+
+void SceneGame::loadLevel1()
+{
+	map.setTexture(ContentPipeline::getInstance().getMapTexture(Maps::map1));
+	kingTower.setPosition(KING_POS_MAP1);
+
+	for (const sf::Vector2f& pos : WAYPOINTS_MAP1)
+	{
+		waypoints[waypointCount].setPosition(pos);
+		waypoints[waypointCount].activate();
+		waypoints[waypointCount].init();
+		if (waypointCount > 0)
+			waypoints[waypointCount - 1].setNext(&waypoints[waypointCount]);
+		++waypointCount;
+	}
+
+	for (const sf::Vector2f& pos : EMPLACEMENTS_MAP1)
+	{
+		towerEmplacements[emplacementCount].setPosition(pos);
+		towerEmplacements[emplacementCount].activate();
+		towerEmplacements[emplacementCount].init();
+		++emplacementCount;
+	}
+
+	for (int i = 0; i < MAX_DEMONS; ++i)
+		demons[i].reset(1, DEMON_SPAWN_MAP1);
+}
+
+
+void SceneGame::loadLevel2()
+{
+	map.setTexture(ContentPipeline::getInstance().getMapTexture(Maps::map2));
+	kingTower.setPosition(KING_POS_MAP2);
+
+	for (const sf::Vector2f& pos : WAYPOINTS_MAP2_COMMON)
+	{
+		waypoints[waypointCount].setPosition(pos);
+		waypoints[waypointCount].activate();
+		waypoints[waypointCount].init();
+		if (waypointCount > 0)
+			waypoints[waypointCount - 1].setNext(&waypoints[waypointCount]);
+		++waypointCount;
+	}
+	splitNodeIndex = waypointCount - 1;
+
+	branchAStartIndex = waypointCount;
+	for (const sf::Vector2f& pos : WAYPOINTS_MAP2_BRANCH_A)
+	{
+		waypoints[waypointCount].setPosition(pos);
+		waypoints[waypointCount].activate();
+		waypoints[waypointCount].init();
+		if (waypointCount > branchAStartIndex)
+			waypoints[waypointCount - 1].setNext(&waypoints[waypointCount]);
+		++waypointCount;
+	}
+
+	branchBStartIndex = waypointCount;
+	for (const sf::Vector2f& pos : WAYPOINTS_MAP2_BRANCH_B)
+	{
+		waypoints[waypointCount].setPosition(pos);
+		waypoints[waypointCount].activate();
+		waypoints[waypointCount].init();
+		if (waypointCount > branchBStartIndex)
+			waypoints[waypointCount - 1].setNext(&waypoints[waypointCount]);
+		++waypointCount;
+	}
+
+	for (const Vector2f& pos : EMPLACEMENTS_MAP2)
+	{
+		towerEmplacements[emplacementCount].setPosition(pos);
+		towerEmplacements[emplacementCount].activate();
+		towerEmplacements[emplacementCount].init();
+		++emplacementCount;
+	}
+
+	for (int i = 0; i < MAX_DEMONS; ++i)
+	{
+		demons[i].reset(1, DEMON_SPAWN_MAP2);
+
+		bool choice = (std::rand() % 2) == 0;
+
+		demons[i].setBranching(
+			&waypoints[splitNodeIndex],
+			&waypoints[branchAStartIndex],
+			&waypoints[branchBStartIndex],
+			choice
+		);
 	}
 }

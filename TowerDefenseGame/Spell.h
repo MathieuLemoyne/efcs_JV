@@ -35,5 +35,4 @@ private:
     float rotationSpeed;
 	SpellType type;
     Sprite rune;
-
 };

@@ -20,4 +20,8 @@ private:
 
 	Font font;
 	Text message;
+
+	int phase = 0;
+
+	Clock timer;
 };

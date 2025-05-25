@@ -43,11 +43,17 @@ bool SceneTitle::init()
 
 void SceneTitle::getInputs()
 {
-	//On passe l'événement en référence et celui-ci est chargé du dernier événement reçu!
 	while (renderWindow.pollEvent(event))
 	{
-		//x sur la fenêtre
-		if (event.type == Event::Closed) exitGame();
+		if (event.type == Event::Closed)
+			exitGame();
+
+		if (event.type == Event::KeyPressed &&
+			event.key.code == Keyboard::Enter)
+		{
+			isRunning = false;
+			transitionToScene = scenes::TRANSITION;
+		}
 	}
 }
 
@@ -65,5 +71,6 @@ void SceneTitle::draw()
 
 bool SceneTitle::unload()
 {
+	//themeSong.stop();
 	return true;
 }

@@ -43,6 +43,8 @@ public:
     void setFirstWaypoint(Waypoint* first);
     bool isAlive() const override;
 
+    bool isAffectedBySpell() const;
+
     void notify(Subject* subject) override;
 
     bool canAttack() const override;
@@ -54,6 +56,8 @@ public:
     void takeDamage(int amount) override;
 
     void startDyingAnimation();
+
+    void setBranching(Waypoint* split, Waypoint* aStart, Waypoint* bStart, bool choice);
 
     DemonState state = DemonState::Moving;
 
@@ -93,4 +97,8 @@ private:
     float plagueDamageMultiplier = 1.f;
     float sacredLightSpeedMultiplier = 1.f;
 
+    bool pathChoice = false;
+    Waypoint* splitWaypoint = nullptr;
+    Waypoint* branchAWaypoint = nullptr;
+    Waypoint* branchBWaypoint = nullptr;
 };

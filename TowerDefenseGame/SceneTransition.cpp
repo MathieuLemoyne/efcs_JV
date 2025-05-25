@@ -21,18 +21,33 @@ Scene::scenes SceneTransition::run()
 
 bool SceneTransition::init()
 {
-	message.setString("Wave 2");
-	message.setCharacterSize(80);
-	
-	//message.setString("Minons of the Dark Lord march on our lands.\n\n             Defend the King's Tower!\n\n                           Wave 1");
-	//message.setCharacterSize(60);
+    if (phase == 0) {
+        message.setString(
+            "Minions of the Dark Lord march on our lands.\n\n"
+            "             Defend the King's Tower!\n\n"
+            "                           Wave 1"
+        );
+    }
+    else if (phase == 1) {
+        message.setString("Wave 2");
+    }
+    //else {
+    //    message.setString("End of Game");
+    //}
 
-	message.setFont(ContentPipeline::getInstance().getComiciFont());
-	message.setColor(Color::White);
-	message.setPosition(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
-	message.setOrigin(message.getGlobalBounds().width / 2, message.getGlobalBounds().height / 2);
-	return true;
+    message.setFont(ContentPipeline::getInstance().getComiciFont());
+    message.setCharacterSize(80);
+    message.setFillColor(Color::White);
+    message.setPosition(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+    message.setOrigin(
+        message.getGlobalBounds().width / 2,
+        message.getGlobalBounds().height / 2
+    );
+
+    timer.restart();
+    return true;
 }
+
 
 void SceneTransition::getInputs()
 {
@@ -46,7 +61,17 @@ void SceneTransition::getInputs()
 
 void SceneTransition::update()
 {
-
+    if (timer.getElapsedTime().asSeconds() >= 3.f)
+    {
+        isRunning = false;
+        if (phase == 0)
+            transitionToScene = scenes::LEVEL1;
+        else if (phase == 1)
+            transitionToScene = scenes::LEVEL2;
+        /*else
+            transitionToScene = scenes::END;*/
+        phase++;
+    }
 }
 
 void SceneTransition::draw()

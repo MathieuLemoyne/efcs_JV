@@ -44,6 +44,10 @@ void Tower::update(float deltaTime)
 	healthBarBackground.setPosition(pos.x, pos.y - barOffsetY);
 	healthBar.setScale(pct, 1.f);
 	healthBar.setPosition(pos.x - offsetX, pos.y - barOffsetY);
+
+	if (!isAffectedBySpell()) {
+		setColor(sf::Color::White);
+	}
 }
 bool Tower::canAttack() const {
 	if (!isAlive()) return false;
@@ -85,10 +89,10 @@ void Tower::heal(int amount) {
 	health += amount;
 	if (health > maxHealth) health = maxHealth;
 }
+
 bool Tower::isAffectedBySpell() const {
 	return sacredLightTimer > 0.f || plagueTimer > 0.f;
 }
-
 
 void Tower::notify(Subject* subject) {
 	Spell* spell = dynamic_cast<Spell*>(subject);
@@ -110,6 +114,7 @@ void Tower::notify(Subject* subject) {
 		sacredLightAttackSpeedMultiplier = 2.f;
 		std::cout << "[DEBUG] Tower healed by " << heal << " points.\n";
 		sacredLightTimer = 5.f;
+		setColor(Color(214, 172, 2, 255));
 	}
 	break;
 	case SpellType::plague:
@@ -118,6 +123,7 @@ void Tower::notify(Subject* subject) {
 		takeDamage(damage);
 		plagueDamageMultiplier = 2.f;
 		plagueTimer = 5.f;
+		setColor(Color(96, 241, 76, 255));
 	}
 	break;
 	default:

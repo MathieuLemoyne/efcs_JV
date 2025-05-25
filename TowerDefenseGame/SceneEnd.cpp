@@ -85,11 +85,23 @@ bool SceneEnd::init()
 
 void SceneEnd::getInputs()
 {
-	//On passe l'événement en référence et celui-ci est chargé du dernier événement reçu!
 	while (renderWindow.pollEvent(event))
 	{
-		//x sur la fenêtre
-		if (event.type == Event::Closed) exitGame();	
+		if (event.type == Event::Closed)
+			exitGame();
+
+		if (event.type == Event::KeyPressed)
+		{
+			if (event.key.code == Keyboard::Enter)
+			{
+				isRunning = false;
+				transitionToScene = scenes::TITLE;
+			}
+			else if (event.key.code == Keyboard::Escape)
+			{
+				exitGame();
+			}
+		}
 	}
 }
 
@@ -107,5 +119,6 @@ void SceneEnd::draw()
 
 bool SceneEnd::unload()
 {
+	//themeSong.stop();
 	return true;
 }

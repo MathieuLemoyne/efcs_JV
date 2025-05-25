@@ -38,7 +38,7 @@ Metrics de du level 2 (à effacer à la fin)
 class SceneGame : public Scene, public IObserver
 {
 public:
-	SceneGame(RenderWindow& renderWindow, Event& event);
+	SceneGame(RenderWindow& renderWindow, Event& event, int level);
 	scenes run() override;
 	bool init() override;
 	enum class ActionMode {
@@ -74,6 +74,9 @@ private:
 	void updateSpellsLogic();
 	void processSpellCasting();
 
+	void loadLevel1();
+	void loadLevel2();
+
 	View view;
 	Hud hud;
 	Inputs inputs;
@@ -81,7 +84,7 @@ private:
 	Sprite map;
 
 	static constexpr int MAX_WAYPOINTS = 20;
-	static constexpr int MAX_EMPLACEMENTS = 8;
+	static constexpr int MAX_EMPLACEMENTS = 9;
 
 	Waypoint waypoints[MAX_WAYPOINTS];
 	TowerEmplacement towerEmplacements[MAX_EMPLACEMENTS];
@@ -119,6 +122,11 @@ private:
 	float manaRegenTimer = 0.f;
 	float manaPerKill = 25.f;
 
+	const int archerCost = 70;
+	const int mageCost = 100;
+	const int plagueCost = 20;
+	const int sacredLightCost = 60;
+
 	void notify(Subject* subject) override;
 
 	int kills = 0;
@@ -127,4 +135,13 @@ private:
 	std::vector<Spell*> spells;
 
 	bool paused = false;
+
+	int level = 1;
+
+	int splitNodeIndex = -1;
+	int branchAStartIndex = -1;
+	int branchBStartIndex = -1;
+	bool demonPathChoice[MAX_DEMONS];
+
+
 };
