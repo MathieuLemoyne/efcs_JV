@@ -65,6 +65,16 @@ bool SceneGame::init()
 
 	nextSpawnTime = 1.f + static_cast<float>(std::rand()) / RAND_MAX * 2.f;
 
+	int musicIndex = std::rand() % MUSIC_COUNT;
+	const char* musicPath = GAME_MUSIC_PATHS[musicIndex];
+
+	if (!gameMusic.openFromFile(musicPath))
+		return false;
+	gameMusic.setLoop(true);
+	gameMusic.setVolume(60.f); // Adjust as needed for your mix
+	gameMusic.play();
+
+
 	return true;
 }
 
@@ -522,6 +532,7 @@ void SceneGame::draw()
 
 bool SceneGame::unload()
 {
+	gameMusic.stop();
 	Subject::removeObserver(this);
 	return true;
 }

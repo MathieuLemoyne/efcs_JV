@@ -41,13 +41,13 @@ bool SceneEnd::init()
 
     if (isVictory)
     {
-        instructions[0].setString("Congratulations!\nYou have defended the King's Tower!");
+        instructions[0].setString("\nYou have defended the King's Tower!");
         instructions[0].setOutlineColor(Color(232, 161, 10, 255));
         instructions[0].setFillColor(Color::Yellow);
     }
     else
     {
-        instructions[0].setString("Game Over\nThe King's Tower has fallen!");
+        instructions[0].setString("\nThe King's Tower has fallen!");
         instructions[0].setOutlineColor(Color(93, 31, 4, 255));
         instructions[0].setFillColor(Color::Red);
     }
@@ -61,11 +61,10 @@ bool SceneEnd::init()
 
     for (int i = 0; i < INSTRUCTIONS_NUMBER; ++i)
     {
-        auto bounds = instructions[i].getGlobalBounds();
-        instructions[i].setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+        auto bounds = instructions[i].getLocalBounds();
+        instructions[i].setOrigin(bounds.left + bounds.width / 2.f, bounds.top + bounds.height / 2.f);
         instructions[i].setPosition(SCREEN_WIDTH / 2.f, 200.f + i * 80.f);
     }
-
     themeSong.setLoop(true);
     themeSong.play();
 

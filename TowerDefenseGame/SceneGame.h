@@ -9,6 +9,8 @@
 #include "IObserver.h"
 #include "Projectile.h"
 #include "Spell.h"
+#include <SFML/Audio.hpp>
+#include <array>
 /*
 Metrics de sceneGame OU du level 1 (à effacer à la fin)
 - Position de la tour du roi: 1138, 600
@@ -149,6 +151,13 @@ private:
 	int branchAStartIndex = -1;
 	int branchBStartIndex = -1;
 	bool demonPathChoice[MAX_DEMONS];
+	Music gameMusic;
+	static constexpr int MUSIC_COUNT = 3;
+	static constexpr std::array<const char*, MUSIC_COUNT> GAME_MUSIC_PATHS = {
+		"Ressources/Sounds/Music/Theme01.ogg",
+		"Ressources/Sounds/Music/Theme02.ogg",
+		"Ressources/Sounds/Music/Theme03.ogg"
+	};
 
 
 };
