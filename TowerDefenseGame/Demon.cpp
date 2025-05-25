@@ -35,7 +35,7 @@ void Demon::init() {
     FloatRect bounds = getGlobalBounds();
     float radius = bounds.width / 4.f;
     setCollisionCircleRadius(radius);
-
+	Subject::addObserver(this);
     activate();
 }
 
@@ -53,6 +53,19 @@ void Demon::reset(int waveNumber, const Vector2f& spawnPosition) {
 void Demon::update(float deltaTime) {
     if (!isAlive()) return;
 
+    if (plagueTimer > 0.f) {
+        plagueTimer -= deltaTime;
+        if (plagueTimer <= 0.f) {
+            plagueDamageMultiplier = 1.f;
+        }
+    }
+    if (sacredLightTimer > 0.f) {
+        sacredLightTimer -= deltaTime;
+        if (sacredLightTimer <= 0.f) {
+            sacredLightSpeedMultiplier = 1.f;
+        }
+    }
+
     timeSinceLastAttack += deltaTime;
 
     if (state == DemonState::Dying) {
@@ -63,9 +76,8 @@ void Demon::update(float deltaTime) {
     updateHealthBar();
     updateAnimation(deltaTime);
     updateMovement(deltaTime);
-
-
 }
+
 
 void Demon::draw(RenderWindow& window) {
     if (!isAlive()) return;
@@ -98,7 +110,7 @@ float Demon::getAttackRange() const {
 }
 
 void Demon::takeDamage(int amount) {
-    health -= amount;
+    health -= amount*plagueDamageMultiplier;
     if (health <= 0 && state != DemonState::Dying) {
         health = 0;
     
@@ -168,7 +180,7 @@ void Demon::updateMovement(float deltaTime) {
     else {
         dir /= dist;
         setScale(dir.x < 0.f ? -1.f : 1.f, 1.f);
-        move(dir * speed * deltaTime);
+        move(dir * speed * sacredLightSpeedMultiplier * deltaTime);
     }
 }
 
@@ -179,6 +191,7 @@ void Demon::setFirstWaypoint(Waypoint* first) {
 bool Demon::isAlive() const {
     return isActive();
 }
+
 void Demon::notify(Subject* subject) {
     Spell* spell = dynamic_cast<Spell*>(subject);
     if (!spell || !isActive()) return;
@@ -197,7 +210,8 @@ void Demon::notify(Subject* subject) {
     {
         int damage = 1 + (std::rand() % 10);
         takeDamage(damage);
-        plagueDamageMultiplier = 2.f; 
+        plagueDamageMultiplier = 2.f;
+        plagueTimer = 5.f;
     }
     break;
 
@@ -206,6 +220,7 @@ void Demon::notify(Subject* subject) {
         int damage = 1 + (std::rand() % 5);
         takeDamage(damage);
         sacredLightSpeedMultiplier = 0.5f;
+        sacredLightTimer = 5.f;
     }
     break;
 
@@ -213,5 +228,6 @@ void Demon::notify(Subject* subject) {
         break;
     }
 }
+
 
 

@@ -23,7 +23,8 @@ class Tower : public GameObject, public Shooter, public Damageable, public IObse
 public:
 	virtual void draw(sf::RenderWindow& window) = 0;
 	virtual void update(float deltaTime);
-
+	float plagueTimer = 0.f;
+	float sacredLightTimer = 0.f;
 	Tower();
 
 	void init(bool isKing = false);
@@ -35,11 +36,13 @@ public:
 
 	void heal(int amount);
 
+
 	void notify(Subject* subject) override;
 
 	float getAttackRange() const;
 	virtual int getDamage() const override;
 	float getAttackFrequency() const override;
+	bool isAffectedBySpell() const ;
 
 	bool isAlive() const override;
 
@@ -50,7 +53,6 @@ protected:
 	float attackRange = 300.f;
 	float attackCooldown = 1.f;
 	float timeSinceLastAttack = 0.f;
-
 	Sprite healthBar;
 	Sprite healthBarBackground;
 
@@ -59,5 +61,6 @@ protected:
 	float barOffsetY = 70.f;
 
 	float plagueDamageMultiplier = 1.f;
+	float sacredLightAttackSpeedMultiplier = 1.f;
 
 };

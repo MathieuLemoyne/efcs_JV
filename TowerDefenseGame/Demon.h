@@ -88,7 +88,9 @@ private:
 
     const int MAX_HEALTH = 60;
     const float BAR_WIDTH = 60;
-    float sacredLightSpeedMultiplier = 1.f;  
-    float plagueDamageMultiplier = 1.f;     
+    float plagueTimer = 0.f;
+    float sacredLightTimer = 0.f;
+    float plagueDamageMultiplier = 1.f;
+    float sacredLightSpeedMultiplier = 1.f;
 
 };
