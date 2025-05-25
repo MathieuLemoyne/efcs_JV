@@ -84,12 +84,16 @@ bool SceneGame::init()
 
 void SceneGame::getInputs()
 {
+	// 1) On ne touche plus à currentAction ici !
+	inputs.reset();
+
 	sf::Event event;
 	while (renderWindow.pollEvent(event))
 	{
 		if (event.type == sf::Event::Closed)
 			exitGame();
 
+		// clic gauche
 		if (event.type == sf::Event::MouseButtonPressed &&
 			event.mouseButton.button == sf::Mouse::Left)
 		{
@@ -99,50 +103,62 @@ void SceneGame::getInputs()
 			);
 		}
 
+		// touché clavier
 		if (event.type == sf::Event::KeyPressed)
 		{
 			switch (event.key.code)
 			{
-			case Keyboard::Z: inputs.keyZPressed = true; break;
-			case Keyboard::X: inputs.keyXPressed = true; break;
-			case Keyboard::P: inputs.keyPPressed = true; break;
-			default: break;
-			}
-			if (currentAction == ActionMode::PlagueSpell || currentAction == ActionMode::SacredLight) {
-				std::cout << "[DEBUG] Spawn Spell clicked\n";
-				Spell* spell = new Spell();
-				spell->init();
-				spell->activateSpell(inputs.mousePosition, currentAction == ActionMode::PlagueSpell ? SpellType::plague : SpellType::sacredLight);
-				spells.push_back(spell);
-			}
+			case sf::Keyboard::P:
+				paused = !paused;
+				currentAction = paused
+					? ActionMode::Pause
+					: ActionMode::None;
+				break;
 
+			case sf::Keyboard::Z:
+				currentAction = ActionMode::CreateArcherTower;
+				break;
+
+			case sf::Keyboard::X:
+				currentAction = ActionMode::CreateMageTower;
+				break;
+
+			case sf::Keyboard::A:
+				currentAction = ActionMode::PlagueSpell;
+				break;
+
+			case sf::Keyboard::S:
+				currentAction = ActionMode::SacredLight;
+				break;
+
+			default:
+				currentAction = ActionMode::None;
+				break;
+			}
 		}
-	}
-
-	if (inputs.keyPPressed)
-	{
-		paused = !paused;
-		currentAction = paused
-			 ? ActionMode::Pause
-			 : ActionMode::None;
-	}
-	else if (inputs.keyZPressed)
-	{
-		currentAction = ActionMode::CreateArcherTower;
-	}
-	else if (inputs.keyXPressed)
-	{
-		currentAction = ActionMode::CreateMageTower;
 	}
 }
 
-
+// — SceneGame.cpp —
 
 void SceneGame::update()
 {
 	hud.updateHud(mana, 0, kills, 0, 0, ActionInString());
 	if (paused) return;
 
+	respawnDeadTowers();
+	processTowerPlacement();
+	updateSpawnAndMana();
+	processDemonsAttacks();
+	updateKingTowerLogic();
+	processTowersAttacks();
+	updateProjectilesCollisions();
+	updateSpellsLogic();
+	processSpellCasting();
+}
+
+void SceneGame::respawnDeadTowers()
+{
 	for (int i = 0; i < emplacementCount; ++i)
 	{
 		Tower* t = emplacementToTower[i];
@@ -150,28 +166,32 @@ void SceneGame::update()
 		{
 			towerEmplacements[i].activate();
 			towerEmplacements[i].init();
-
 			emplacementToTower[i] = nullptr;
 		}
 	}
+}
 
-
-	if (inputs.mouseLeftButtonClicked &&
+void SceneGame::processTowerPlacement()
+{
+	if (!(inputs.mouseLeftButtonClicked &&
 		(currentAction == ActionMode::CreateArcherTower ||
-			currentAction == ActionMode::CreateMageTower))
+			currentAction == ActionMode::CreateMageTower)))
+		return;
+
+	for (int i = 0; i < emplacementCount; ++i)
 	{
-		for (int i = 0; i < emplacementCount; ++i)
+		if (emplacementToTower[i] == nullptr &&
+			towerEmplacements[i].isMouseOver(inputs.mousePosition))
 		{
-			if (emplacementToTower[i] == nullptr &&
-				towerEmplacements[i].isMouseOver(inputs.mousePosition))
-			{
-				createTower(towerEmplacements[i].getPosition(), i);
-				towerEmplacements[i].deactivate();
-				break;
-			}
+			createTower(towerEmplacements[i].getPosition(), i);
+			towerEmplacements[i].deactivate();
+			break;
 		}
 	}
+}
 
+void SceneGame::updateSpawnAndMana()
+{
 	spawnTimer += deltaTime;
 	manaRegenTimer += deltaTime;
 
@@ -179,53 +199,39 @@ void SceneGame::update()
 	{
 		spawnTimer = 0.f;
 		nextSpawnTime = 1.f + static_cast<float>(rand()) / RAND_MAX * 2.f;
-
 		demons[spawnedDemons].setFirstWaypoint(&waypoints[0]);
 		spawnedDemons++;
 	}
+
 	if (manaRegenTimer >= 1.f) {
 		mana += manaRegenRate * manaRegenTimer;
 		manaRegenTimer = 0.f;
-
-		if (mana > maxMana)
-			mana = maxMana;
+		if (mana > maxMana) mana = maxMana;
 	}
+}
 
+void SceneGame::processDemonsAttacks()
+{
 	for (int i = 0; i < spawnedDemons; ++i)
 	{
 		Demon& demon = demons[i];
 		demon.update(deltaTime);
-
-		if (!demon.canAttack())
-			continue;
+		if (!demon.canAttack()) continue;
 
 		Tower* bestTarget = nullptr;
 		float bestDist = demon.getAttackRange();
 
 		for (Tower* tower : towers)
 		{
-			if (!tower->isAlive())
-				continue;
+			if (!tower->isAlive()) continue;
 			float d = distance(demon, *tower);
-			if (d < bestDist)
-			{
-				bestDist = d;
-				bestTarget = tower;
-			}
+			if (d < bestDist) { bestDist = d; bestTarget = tower; }
 		}
-		{
-			float dKing = distance(demon, kingTower);
-			if (dKing < bestDist)
-			{
-				bestDist = dKing;
-				bestTarget = &kingTower;
-			}
-		}
+		float dKing = distance(demon, kingTower);
+		if (dKing < bestDist) { bestTarget = &kingTower; }
 
 		if (bestTarget && demon.shoot())
 		{
-			std::cout << "[DEBUG] Demon shoot at target\n";
-			std::cout << "[DEBUG] Position Tower " << bestTarget->getPosition().x << " " << bestTarget->getPosition().y << "\n";
 			spawnProjectile(
 				ProjectileType::fireball,
 				demon.getPosition(),
@@ -235,135 +241,167 @@ void SceneGame::update()
 			);
 		}
 	}
+}
 
+void SceneGame::updateKingTowerLogic()
+{
+	kingTower.update(deltaTime);
+}
 
-	Tower* towerClosestToKing = nullptr;
-	float  minDistToKing = std::numeric_limits<float>::max();
-	for (Tower* tower : towers) {
-		float d = distance(kingTower, *tower);
-		if (d < minDistToKing) {
-			minDistToKing = d;
-			towerClosestToKing = tower;
+void SceneGame::processTowersAttacks()
+{
+	for (Tower* tower : towers)
+		processSingleTowerAttack(tower);
+}
+
+void SceneGame::processSingleTowerAttack(Tower* tower)
+{
+	if (!tower->isAlive()) return;
+	tower->update(deltaTime);
+
+	Demon* bestTarget = selectBestTowerTarget(tower);
+	if (bestTarget && tower->shoot())
+	{
+		ProjectileType type =
+			dynamic_cast<ArcherTower*>(tower)
+			? ProjectileType::arrow
+			: ProjectileType::blast;
+
+		spawnProjectile(
+			type,
+			tower->getPosition(),
+			bestTarget->getPosition(),
+			tower->getDamage(),
+			bestTarget
+		);
+	}
+}
+
+Demon* SceneGame::selectBestTowerTarget(Tower* tower)
+{
+	Demon* bestTarget = nullptr;
+	float towerRange = tower->getAttackRange();
+	float kingRange = kingTower.getAttackRange();
+	float bestDistTower = towerRange;
+	float bestDistKing = std::numeric_limits<float>::max();
+
+	for (int i = 0; i < spawnedDemons; ++i)
+	{
+		Demon& demon = demons[i];
+		if (!demon.isAlive()) continue;
+
+		float dTower = distance(*tower, demon);
+		if (dTower > towerRange) continue;
+
+		float dKing = distance(kingTower, demon);
+		if (dKing <= kingRange)
+		{
+			if (dKing < bestDistKing)
+			{
+				bestDistKing = dKing;
+				bestTarget = &demon;
+			}
+		}
+		else if (dTower < bestDistTower)
+		{
+			bestDistTower = dTower;
+			bestTarget = &demon;
 		}
 	}
+	return bestTarget;
+}
 
-	kingTower.update(deltaTime);
+void SceneGame::updateProjectilesCollisions()
+{
+	for (int t = 0; t < 3; ++t)
+	{
+		for (int i = 0; i < MAX_PER_TYPE; ++i)
+		{
+			Projectile& p = projectiles[t][i];
+			if (!p.isActive()) continue;
 
-	// Mise à jour des tours
+			p.update(deltaTime);
+			processSingleProjectile(p, static_cast<ProjectileType>(t));
+		}
+	}
+}
+
+void SceneGame::processSingleProjectile(Projectile& p, ProjectileType type)
+{
+	switch (type)
+	{
+	case ProjectileType::arrow:
+	case ProjectileType::blast:
+		handleArrowOrBlastCollision(p);
+		break;
+
+	case ProjectileType::fireball:
+		handleFireballCollision(p);
+		break;
+	}
+}
+
+void SceneGame::handleArrowOrBlastCollision(Projectile& p)
+{
+	for (int d = 0; d < spawnedDemons; ++d)
+	{
+		Demon& demon = demons[d];
+		if (!demon.isAlive()) continue;
+		if (p.isCircleColliding(demon))
+		{
+			p.applyDamage(&demon);
+			break;
+		}
+	}
+}
+
+void SceneGame::handleFireballCollision(Projectile& p)
+{
+	bool hit = false;
 	for (Tower* tower : towers)
 	{
 		if (!tower->isAlive()) continue;
-
-		tower->update(deltaTime);
-
-		Demon* bestTarget = nullptr;
-		float  towerRange = tower->getAttackRange();
-		float  kingRange = kingTower.getAttackRange();
-		float  bestDistKing = std::numeric_limits<float>::max();
-		float  bestDistTower = towerRange;
-
-		for (int i = 0; i < spawnedDemons; ++i)
+		if (p.isCircleColliding(*tower))
 		{
-			Demon& demon = demons[i];
-			if (!demon.isAlive()) continue;
-
-			float dTower = distance(*tower, demon);
-			if (dTower > towerRange) continue;
-
-			float dKing = distance(kingTower, demon);
-
-			if (dKing <= kingRange)
-			{
-				if (dKing < bestDistKing)
-				{
-					bestDistKing = dKing;
-					bestTarget = &demon;
-				}
-			}
-			else if (bestTarget == nullptr)
-			{
-				if (dTower < bestDistTower)
-				{
-					bestDistTower = dTower;
-					bestTarget = &demon;
-				}
-			}
-		}
-
-		if (bestTarget && tower->shoot())
-		{
-			ProjectileType type;
-			if (dynamic_cast<ArcherTower*>(tower)) type = ProjectileType::arrow;
-			else if (dynamic_cast<MageTower*>(tower))   type = ProjectileType::blast;
-
-			spawnProjectile(
-				type,
-				tower->getPosition(),
-				bestTarget->getPosition(),
-				tower->getDamage(),
-				bestTarget
-			);
+			std::cout << "[DEBUG] Projectile hit a tower!\n";
+			p.applyDamage(tower);
+			hit = true;
+			break;
 		}
 	}
-
-	for (int t = 0; t < 3; ++t) 
+	if (!hit && p.isCircleColliding(kingTower))
 	{
-		for (int i = 0; i < MAX_PER_TYPE; ++i) 
-		{
-			if (projectiles[t][i].isActive()) projectiles[t][i].update(deltaTime);
-		}
+		p.applyDamage(&kingTower);
 	}
-
-	for (int t = 0; t < 3; ++t) {
-		for (int i = 0; i < MAX_PER_TYPE; ++i) {
-			Projectile& projectile = projectiles[t][i];
-			if (!projectile.isActive()) continue;
-
-			ProjectileType type = static_cast<ProjectileType>(t);
-			switch (type) 
-			{
-			case ProjectileType::arrow:
-			case ProjectileType::blast:
-				for (int d = 0; d < spawnedDemons; ++d) {
-					Demon& demon = demons[d];
-					if (!demon.isAlive()) continue;
-					if (projectile.isCircleColliding(demon)) {
-						projectile.applyDamage(&demon);
-						break;
-					}
-				}
-				break;
-
-			case ProjectileType::fireball: {
-				bool hit = false;
-				for (Tower* tower : towers) {
-					if (!tower->isAlive()) continue;
-					if (projectile.isCircleColliding(*tower)) {
-						std::cout << "[DEBUG] Projectile hit a tower!\n";
-						projectile.applyDamage(tower);
-						hit = true;
-						break;
-					}
-				}
-				if (!hit && projectile.isCircleColliding(kingTower)) {
-					projectile.applyDamage(&kingTower);
-				}
-			} break;
-			}
-		}
-	}
-	if (manaRegenTimer >= 1.f) {
-    mana += manaRegenRate * manaRegenTimer;
-    manaRegenTimer = 0.f;
-
-    if (mana > maxMana)
-        mana = maxMana;
 }
-	for (Spell* spell : spells) {
+
+
+void SceneGame::updateSpellsLogic()
+{
+	for (Spell* spell : spells)
 		spell->update(deltaTime);
-	}
-	spells.erase(std::remove(spells.begin(), spells.end(), nullptr), spells.end());
+	spells.erase(std::remove(spells.begin(), spells.end(), nullptr),
+		spells.end());
 }
+
+void SceneGame::processSpellCasting()
+{
+	if (inputs.mouseLeftButtonClicked &&
+		(currentAction == ActionMode::PlagueSpell ||
+			currentAction == ActionMode::SacredLight))
+	{
+		Spell* spell = new Spell();
+		spell->init();
+		spell->activateSpell(
+			inputs.mousePosition,
+			currentAction == ActionMode::PlagueSpell
+			? SpellType::plague
+			: SpellType::sacredLight
+		);
+		spells.push_back(spell);
+	}
+}
+
 
 
 void SceneGame::draw()

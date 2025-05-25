@@ -59,6 +59,21 @@ private:
 
 	float distance(const GameObject& a, const GameObject& b) const;
 
+	void respawnDeadTowers();
+	void processTowerPlacement();
+	void updateSpawnAndMana();
+	void processDemonsAttacks();
+	void updateKingTowerLogic();
+	void processTowersAttacks();
+	void processSingleTowerAttack(Tower* tower);
+	Demon* selectBestTowerTarget(Tower* tower);
+	void updateProjectilesCollisions();
+	void processSingleProjectile(Projectile& projectile, ProjectileType type);
+	void handleArrowOrBlastCollision(Projectile& p);
+	void handleFireballCollision(Projectile& p);
+	void updateSpellsLogic();
+	void processSpellCasting();
+
 	View view;
 	Hud hud;
 	Inputs inputs;

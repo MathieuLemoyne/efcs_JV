@@ -22,4 +22,6 @@ struct Inputs
 	bool keyPPressed;
 	bool keyZPressed;
 	bool keyXPressed;
+	bool keyAPressed;
+	bool keySPressed;
 };
