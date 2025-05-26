@@ -18,4 +18,5 @@ private:
 	Image icon;
 
 	bool victory;
+	int savedScore = 0;
 };

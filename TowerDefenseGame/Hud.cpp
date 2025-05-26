@@ -56,6 +56,7 @@ void Hud::draw(sf::RenderWindow& renderWindow)
 	renderWindow.draw(killsText);
 	renderWindow.draw(highScoreText);
 	renderWindow.draw(waveText);
+	renderWindow.draw(highScoreText);
 
 	for (int i = 0; i < INSTRUCTIONS_NUMBER; i++)
 		renderWindow.draw(instructionTexts[i]);

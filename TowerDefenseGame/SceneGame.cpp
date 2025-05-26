@@ -9,8 +9,10 @@
 #include "Hud.h"
 #include "Spell.h"
 
-SceneGame::SceneGame(RenderWindow& renderWindow, Event& event, int level)
-	: Scene(renderWindow, event), level(level)
+SceneGame::SceneGame(RenderWindow& renderWindow, Event& event, int level, int initialScore)
+	: Scene(renderWindow, event)
+	, level(level)
+	, score(initialScore)
 {
 	view = renderWindow.getDefaultView();
 }
@@ -71,7 +73,7 @@ bool SceneGame::init()
 	if (!gameMusic.openFromFile(musicPath))
 		return false;
 	gameMusic.setLoop(true);
-	gameMusic.setVolume(60.f); // Adjust as needed for your mix
+	gameMusic.setVolume(60.f);
 	gameMusic.play();
 
 
@@ -138,7 +140,8 @@ void SceneGame::getInputs()
 
 void SceneGame::update()
 {
-	hud.updateHud(mana, score, kills, 0, 0, ActionInString());
+	checkAndUpdateHighScore();
+	hud.updateHud(mana, score, kills, level, HighScoreManager::getHighScore(), ActionInString());
 	if (paused) return;
 
 	respawnDeadTowers();
@@ -698,6 +701,17 @@ void SceneGame::loadLevel2()
 	}
 }
 
+void SceneGame::checkAndUpdateHighScore() {
+	int storedHS = HighScoreManager::getHighScore();
+	if (score > storedHS) {
+		HighScoreManager::updateIfBetter(score, level);
+		highScore = score;
+	}
+	else {
+		highScore = storedHS;
+	}
+}
+
 void SceneGame::checkKingTowerDeath()
 {
 	if (!kingTower.isAlive()) {
@@ -713,9 +727,9 @@ void SceneGame::checkLevelCompletion()
 		transitionToScene = scenes::TRANSITION;
 	}
 	else if (level == 2 && kills >= KILL_TRESHOLD) {
+		HighScoreManager::updateIfBetter(score, level);
 		isRunning = false;
 		transitionToScene = scenes::END;
 	}
+
 }
-
-

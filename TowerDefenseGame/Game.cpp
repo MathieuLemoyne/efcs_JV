@@ -4,6 +4,7 @@
 #include "SceneTransition.h"
 #include "SceneGame.h"
 #include "SceneEnd.h"
+#include "HighScoreManager.h"
 
 
 Game::Game()
@@ -28,6 +29,9 @@ int Game::run()
 {
 	if (!ContentPipeline::getInstance().loadContent()) return EXIT_FAILURE;
 
+	HighScoreManager::load();
+
+
 	//Un enum et un pointeur de scene pour faire la manipulation de scène
 	Scene::scenes sceneSelector = Scene::scenes::TITLE;
 	Scene* activeScene = nullptr; //Pointeur de la super-classe, peut pointer sur n'importe quelle scène
@@ -42,8 +46,10 @@ int Game::run()
 		if (sceneSelector == Scene::scenes::FAIL) return EXIT_FAILURE;
 
 		if (sceneSelector == Scene::scenes::TITLE)
-            SceneTransition::phase = 0;
-
+		{
+			SceneTransition::phase = 0;
+			savedScore = 0;
+		}
 		//Vous allez ajouter d'autre scènes, alors elles devront
 		//être ajoutées ici
 		switch (sceneSelector)
@@ -57,10 +63,10 @@ int Game::run()
 			activeScene = new SceneTransition(renderWindow, event);
 			break;
 		case Scene::scenes::LEVEL1:
-			activeScene = new SceneGame(renderWindow, event, 1);
+			activeScene = new SceneGame(renderWindow, event, 1, savedScore);
 			break;
 		case Scene::scenes::LEVEL2:
-			activeScene = new SceneGame(renderWindow, event, 2);
+			activeScene = new SceneGame(renderWindow, event, 2, savedScore);
 			break;
 		case Scene::scenes::END:
 		{
@@ -76,9 +82,20 @@ int Game::run()
 			//Laquelle on transition
 			sceneSelector = activeScene->run();
 
+			if (SceneGame* game = dynamic_cast<SceneGame*>(activeScene))
+			{
+				savedScore = game->getScore();
+			}
+
 			if (sceneSelector == Scene::scenes::END) {
-				SceneGame* g = dynamic_cast<SceneGame*>(activeScene);
-				victory = (g && g->getLevel() == 2 && g->getKills() >= SceneGame::KILL_TRESHOLD);
+				SceneGame* sceneGame = dynamic_cast<SceneGame*>(activeScene);
+				if (sceneGame) {
+					HighScoreManager::updateIfBetter(
+						sceneGame->getScore(),
+						sceneGame->getLevel()
+					);
+				}
+				victory = (sceneGame && sceneGame->getLevel() == 2 && sceneGame->getKills() >= SceneGame::KILL_TRESHOLD);
 				delete activeScene;
 				activeScene = new SceneEnd(renderWindow, event, victory);
 			}

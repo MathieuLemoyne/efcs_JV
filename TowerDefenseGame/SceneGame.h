@@ -11,6 +11,8 @@
 #include "Spell.h"
 #include <SFML/Audio.hpp>
 #include <array>
+#include "HighScoreManager.h"
+
 /*
 Metrics de sceneGame OU du level 1 (à effacer à la fin)
 - Position de la tour du roi: 1138, 600
@@ -40,7 +42,7 @@ Metrics de du level 2 (à effacer à la fin)
 class SceneGame : public Scene, public IObserver
 {
 public:
-	SceneGame(RenderWindow& renderWindow, Event& event, int level);
+	SceneGame::SceneGame(RenderWindow& renderWindow, Event& event, int level, int initialScore);
 	scenes run() override;
 	bool init() override;
 	enum class ActionMode {
@@ -52,6 +54,7 @@ public:
 		Pause
 	};
 
+	int getScore() const { return score; }
 	int getLevel() const { return level; }
 	int getKills() const { return kills; }
 
@@ -83,6 +86,8 @@ private:
 
 	void checkKingTowerDeath();
 	void checkLevelCompletion();
+
+	void checkAndUpdateHighScore();
 
 	void loadLevel1();
 	void loadLevel2();
@@ -127,7 +132,7 @@ private:
 
 	float mana = 500.f;
 	float maxMana = 10000.f;
-	float manaRegenRate = 5.f; // mana/sec
+	float manaRegenRate = 5.f;
 	float manaRegenTimer = 0.f;
 	float manaPerKill = 25.f;
 
@@ -138,8 +143,9 @@ private:
 
 	void notify(Subject* subject) override;
 
-	int kills = 49;
+	int kills = 48;
 	int score = 0;
+	int highScore = 0;
 
 	std::vector<Spell*> spells;
 
