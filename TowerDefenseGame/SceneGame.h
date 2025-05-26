@@ -144,7 +144,7 @@ private:
 
 	void notify(Subject* subject) override;
 
-	int kills = 48;
+	int kills = 0;
 	int score = 0;
 	int highScore = 0;
 
