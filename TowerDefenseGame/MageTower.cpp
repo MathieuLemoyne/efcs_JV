@@ -26,8 +26,16 @@ void MageTower::update(float dt)
 {
     timeSinceLastAttack += dt;
     Tower::update(dt);
-    // mettre lanimation
+
+    animationTime += dt;
+    const float frameDuration = 0.15f;
+    if (animationTime >= frameDuration) {
+        animationTime = 0.f;
+        currentFrame = (currentFrame + 1) % 3;
+        setTextureRect(sf::IntRect(currentFrame * 150, 0, 150, 150));
+    }
 }
+
 
 int MageTower::getDamage() const {
     return 1 + (std::rand() % 12);

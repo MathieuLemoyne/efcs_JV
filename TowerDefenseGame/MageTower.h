@@ -10,8 +10,8 @@ public:
 
 	void update(float dt) override;
 private:
+	float animationTime = 0.f;
 	int currentFrame = 0;
-	float animationTimer = 0.f;
 	const float frameDuration = 0.2f;
 	const int frameCount = 3;
 	const int frameWidth = 64;
