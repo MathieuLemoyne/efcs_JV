@@ -113,6 +113,7 @@ private:
 	static constexpr int MAX_DEMONS = 20;
 	Demon demons[MAX_DEMONS];
 	int spawnedDemons = 0;
+	Demon* demonAttackedKing = nullptr;
 	float spawnTimer = 0.f;
 	float nextSpawnTime = 0.f;
 

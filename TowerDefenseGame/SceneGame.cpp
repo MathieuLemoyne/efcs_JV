@@ -249,6 +249,7 @@ void SceneGame::updateSpawnAndMana()
 
 void SceneGame::processDemonsAttacks()
 {
+	demonAttackedKing = nullptr;
 	for (int i = 0; i < spawnedDemons; ++i)
 	{
 		Demon& demon = demons[i];
@@ -316,37 +317,25 @@ void SceneGame::processSingleTowerAttack(Tower* tower)
 
 Demon* SceneGame::selectBestTowerTarget(Tower* tower)
 {
-	Demon* bestTarget = nullptr;
-	float towerRange = tower->getAttackRange();
-	float kingRange = kingTower.getAttackRange();
-	float bestDistTower = towerRange;
-	float bestDistKing = std::numeric_limits<float>::max();
+	float range = tower->getAttackRange();
+
+	if (demonAttackedKing &&
+		demonAttackedKing->isAlive() &&
+		distance(*tower, *demonAttackedKing) <= range)
+	{
+		return demonAttackedKing;
+	}
 
 	for (int i = 0; i < spawnedDemons; ++i)
 	{
 		Demon& demon = demons[i];
-		if (!demon.isAlive()) continue;
-
-		float dTower = distance(*tower, demon);
-		if (dTower > towerRange) continue;
-
-		float dKing = distance(kingTower, demon);
-		if (dKing <= kingRange)
-		{
-			if (dKing < bestDistKing)
-			{
-				bestDistKing = dKing;
-				bestTarget = &demon;
-			}
-		}
-		else if (dTower < bestDistTower)
-		{
-			bestDistTower = dTower;
-			bestTarget = &demon;
-		}
+		if (demon.isAlive() && distance(*tower, demon) <= range)
+			return &demon;
 	}
-	return bestTarget;
+
+	return nullptr;
 }
+
 
 void SceneGame::updateProjectilesCollisions()
 {
